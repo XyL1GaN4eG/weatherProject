@@ -1,0 +1,27 @@
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- JDBC Database connection settings -->
+        <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5433/studs</property>
+        <property name="hibernate.connection.username">s408614</property>
+        <property name="hibernate.connection.password">mCL2Y1wQAwyz3d9G</property>
+
+        <!-- JDBC connection pool settings ... using built-in test pool -->
+        <property name="hibernate.connection.pool_size">10</property>
+
+        <!-- Select our SQL dialect -->
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL95Dialect</property>
+
+        <!-- Echo all executed SQL to stdout -->
+        <property name="hibernate.show_sql">true</property>
+
+        <!-- Drop and re-create the database schema on startup -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Names the annotated entity class -->
+        <mapping class="org.example.server.database.WeatherDataEntity"/>
+    </session-factory>
+</hibernate-configuration>
