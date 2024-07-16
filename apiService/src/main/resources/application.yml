@@ -1,0 +1,5 @@
+
+
+bot:
+  name: "WeatherBot"
+  token: {$BOT_TOKEN:}
