@@ -35,7 +35,7 @@ jobs:
         run: |
           echo "Host: ${{ secrets.SERVER_HOST }}"
           echo "Username: ${{ secrets.SERVER_USERNAME }}"
-          echo "Key: ${{ secrets.SERVER_SSH_KEY }}"
+          echo "Key: ${{ secrets.SSH_PRIVATE_KEY }}"
 
 
       - name: Deploy userService to Server
@@ -43,7 +43,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'userService/target/*.jar'
           target: '/home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService'
           port: 22
@@ -65,7 +65,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             sudo systemctl stop userService || true
             sudo cp /home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
