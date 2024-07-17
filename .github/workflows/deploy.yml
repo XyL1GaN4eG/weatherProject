@@ -20,7 +20,7 @@ jobs:
           java-version: '17'
 
       - name: Build userService
-        run: mvn -B package --file userService/pom.xml
+        run: mvn -e -B package --file userService/pom.xml
 
 #      - name: Build anotherService
 #        run: mvn -B package --file /path/to/anotherService/pom.xml
