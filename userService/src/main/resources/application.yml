@@ -8,6 +8,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+      dialect: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: true
   rabbitmq:
     host: localhost
