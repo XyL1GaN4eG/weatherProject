@@ -24,9 +24,13 @@ jobs:
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
           echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}" >> $GITHUB_ENV
+          echo "RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" >> $GITHUB_ENV
+          echo "RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" >> $GITHUB_ENV
 
       - name: Debug environment variables
-        run: printenv | grep DB
+        run: printenv | grep -E 'DB|RABBITMQ'
 
       - name: Build userService
         run: mvn -e -B package --file userService/pom.xml
