@@ -63,12 +63,6 @@
             <artifactId>spring-rabbit-test</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.javassist/javassist -->
-        <dependency>
-            <groupId>org.javassist</groupId>
-            <artifactId>javassist</artifactId>
-            <version>3.30.2-GA</version>
-        </dependency>
 
     </dependencies>
 
@@ -86,6 +80,10 @@
                     </excludes>
                 </configuration>
             </plugin>
+
         </plugins>
+
+
     </build>
+
 </project>

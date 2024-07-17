@@ -14,7 +14,7 @@ import static weatherproject.userservice.config.RabbitMQConfig.*;
 
 @Service
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
-//конструктор добавляет ко всем полям аннотацию автовайред
+//онконструктор добавляет ко всем полям аннотацию автовайред
 public class UserService {
 
     private final UserRepository userRepository;
