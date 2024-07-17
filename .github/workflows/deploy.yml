@@ -38,7 +38,20 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SERVER_SSH_KEY }}
           source: 'userService/target/*.jar'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'
+          target: '/home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService'
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: false
+          strip_components: 0
+          overwrite: false
+          tar_dereference: false
+          tar_exec: tar
+          proxy_port: 22
+          proxy_timeout: 30s
+          proxy_use_insecure_cipher: false
 
       - name: SSH into server and restart userService
         uses: appleboy/ssh-action@master
@@ -48,5 +61,5 @@ jobs:
           key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
             sudo systemctl stop userService || true
-            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
+            sudo cp /home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
             sudo systemctl start userService
