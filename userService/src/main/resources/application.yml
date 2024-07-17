@@ -6,9 +6,6 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL94Dialect
     show-sql: true
     hibernate:
       ddl-auto: update
