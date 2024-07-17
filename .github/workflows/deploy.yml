@@ -17,7 +17,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin' # или 'zulu', 'adopt', 'corretto'
-          java-version: '11'
+          java-version: '17'
 
       - name: Build userService
         run: mvn -B package --file userService/pom.xml
