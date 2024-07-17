@@ -31,21 +31,14 @@ jobs:
       - name: Build userService
         run: mvn -e -X -B package --file userService/pom.xml
 
-      - name: Debug SCP connection
-        run: |
-          echo "Host: ${{ secrets.SERVER_HOST }}"
-          echo "Username: ${{ secrets.SERVER_USERNAME }}"
-          echo "Key: ${{ secrets.SSH_PRIVATE_KEY }}"
-
-
       - name: Deploy userService to Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           source: 'userService/target/*.jar'
-          target: '/home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService'
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar'
           port: 22
           timeout: 30s
           command_timeout: 10m
@@ -53,7 +46,7 @@ jobs:
           rm: false
           debug: false
           strip_components: 0
-          overwrite: false
+          overwrite: true
           tar_dereference: false
           tar_exec: tar
           proxy_port: 22
@@ -65,8 +58,10 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.SERVER_SSH_KEY }}
           script: |
-            sudo systemctl stop userService || true
-            sudo cp /home/${{ secrets.SERVER_USERNAME }}/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
-            sudo systemctl start userService
+            if sudo systemctl is-active --quiet user-service; then
+              sudo systemctl stop user-service
+            fi
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar /opt/userService/
+            sudo systemctl start user-service
