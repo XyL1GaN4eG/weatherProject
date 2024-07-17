@@ -7,14 +7,16 @@ spring:
     password: password
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
-    hibernate:
-      ddl-auto: update
     properties:
       hibernate:
         jdbc:
           lob:
             non_contextual_creation: true
         format_sql: true
+        boot:
+          allow_jdbc_metadata_access: false  # Отключение использования метаданных JDBC
+    hibernate:
+      ddl-auto: update
   rabbitmq:
     host: localhost
     port: 5672
