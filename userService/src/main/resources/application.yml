@@ -2,11 +2,14 @@ spring:
   application:
     name: userService
   datasource:
-    url: jdbc:postgresql://localhost:5432/weatherproject
-    username: username
-    password: password
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
   jpa:
-    hibernate:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+
       ddl-auto: update
     show-sql: true
   rabbitmq:
