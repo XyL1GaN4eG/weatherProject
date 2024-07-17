@@ -6,10 +6,15 @@ spring:
     username: username
     password: password
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     hibernate:
       ddl-auto: update
-      dialect: org.hibernate.dialect.PostgreSQL94Dialect
-    show-sql: true
+    properties:
+      hibernate:
+        jdbc:
+          lob:
+            non_contextual_creation: true
+        format_sql: true
   rabbitmq:
     host: localhost
     port: 5672
