@@ -31,6 +31,13 @@ jobs:
       - name: Build userService
         run: mvn -e -X -B package --file userService/pom.xml
 
+      - name: Debug SCP connection
+        run: |
+          echo "Host: ${{ secrets.SERVER_HOST }}"
+          echo "Username: ${{ secrets.SERVER_USERNAME }}"
+          echo "Key: ${{ secrets.SERVER_SSH_KEY }}"
+
+
       - name: Deploy userService to Server
         uses: appleboy/scp-action@master
         with:
