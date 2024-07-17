@@ -29,7 +29,7 @@ jobs:
         run: printenv
 
       - name: Build userService
-        run: mvn -e -X -B package --file userService/pom.xml
+        run: mvn -e -B package --file userService/pom.xml
 
       - name: List built files
         run: ls -la userService/target
@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'userService/target/*.jar'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar'
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/'
           port: 22
           timeout: 30s
           command_timeout: 10m
@@ -75,3 +75,13 @@ jobs:
               echo "JAR file not found!"
               exit 1
             fi
+
+      - name: List files on server for debug
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Listing files in /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/"
+            ls -la /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/
