@@ -2,22 +2,15 @@ spring:
   application:
     name: userService
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:5432/weatherproject
+    username: username
+    password: password
   jpa:
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL82Dialect
-        temp:
-          use_jdbc_metadata_defaults: false
-        bytecode:
-          provider: bytebuddy  # Заменяем javassist на bytebuddy здесь
-    show-sql: true
     hibernate:
       ddl-auto: update
+    show-sql: true
   rabbitmq:
-    host: ${RABBITMQ_HOST}
-    port: ${RABBITMQ_PORT}
-    username: ${RABBITMQ_USERNAME}
-    password: ${RABBITMQ_PASSWORD}
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
