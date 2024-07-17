@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: userService
   datasource:
     url: jdbc:postgresql://localhost:5432/weatherproject
     username: username
@@ -9,15 +7,10 @@ spring:
     database-platform: org.hibernate.dialect.PostgreSQL94Dialect
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQL94Dialect
         jdbc:
           lob:
             non_contextual_creation: true
         format_sql: true
-        boot:
-          allow_jdbc_metadata_access: false  # Отключение использования метаданных JDBC
-    hibernate:
-      ddl-auto: update
   rabbitmq:
     host: localhost
     port: 5672
