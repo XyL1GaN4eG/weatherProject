@@ -11,6 +11,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQL82Dialect
         temp:
           use_jdbc_metadata_defaults: false
+        bytecode:
+          provider: bytebuddy  # Заменяем javassist на bytebuddy здесь
     show-sql: true
     hibernate:
       ddl-auto: update
