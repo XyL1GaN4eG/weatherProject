@@ -29,7 +29,7 @@ jobs:
         run: printenv
 
       - name: Build userService
-        run: mvn -e -B package --file userService/pom.xml
+        run: mvn -e -X -B package --file userService/pom.xml
 
       - name: List built files
         run: ls -la userService/target
@@ -40,8 +40,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'userService/target/*.jar'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/'
+          source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar'
           port: 22
           timeout: 30s
           command_timeout: 10m
