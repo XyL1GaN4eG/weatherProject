@@ -63,18 +63,10 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar ]; then
-              echo "JAR file found. Proceeding with service restart."
-              if sudo systemctl is-active --quiet user-service; then
-                sudo systemctl stop user-service
-              fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
-              sudo systemctl start user-service
-            else
-              echo "JAR file not found!"
-              exit 1
-            fi
+            echo "Restarting userService..."
+            sudo systemctl stop user-service || true
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+            sudo systemctl start user-service
 
       - name: Build weatherApiService
         run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
@@ -111,18 +103,10 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar ]; then
-              echo "JAR file found. Proceeding with service restart."
-              if sudo systemctl is-active --quiet weather-api-service; then
-                sudo systemctl stop weather-api-service
-              fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
-              sudo systemctl start weather-api-service
-            else
-              echo "JAR file not found!"
-              exit 1
-            fi
+            echo "Restarting weatherApiService..."
+            sudo systemctl stop weather-api-service || true
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
+            sudo systemctl start weather-api-service
 
       - name: List files on server for debug
         uses: appleboy/ssh-action@master
