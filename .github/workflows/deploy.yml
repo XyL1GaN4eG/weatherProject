@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar'
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'
           port: 22
           timeout: 30s
           command_timeout: 10m
