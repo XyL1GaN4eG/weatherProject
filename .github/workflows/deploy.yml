@@ -28,47 +28,33 @@ jobs:
       - name: Debug environment variables
         run: printenv  # Вывести все переменные окружения для отладки
 
-      - name: Copy repository to server
+      - name: Build userService
+        run: mvn -e -B package --file userService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+
+      - name: List built files
+        run: ls -la userService/target  # Показать список файлов в целевой папке после сборки
+
+      - name: Deploy userService to Server
         uses: appleboy/scp-action@master
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '.'  # Копируем весь репозиторий
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject'  # Указать целевой путь на сервере
+          source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'  # Указать целевой путь на сервере
           port: 22
           timeout: 30s
           command_timeout: 10m
           use_insecure_cipher: false
           rm: false
           debug: false
-          strip_components: 1
+          strip_components: 0
           overwrite: true
           tar_dereference: false
           tar_exec: tar
           proxy_port: 22
           proxy_timeout: 30s
           proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
-
-      - name: SSH into server and compile userService
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
-            mvn clean package
-
-      - name: SSH into server and compile weatherApiService
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
-            mvn clean package
 
       - name: SSH into server and restart userService
         uses: appleboy/ssh-action@master
@@ -78,37 +64,16 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar ]; then
+            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar ]; then
               echo "JAR file found. Proceeding with service restart."
               if sudo systemctl is-active --quiet user-service; then
-                sudo systemctl stop user-service
+                sudo systemctl stop user-service  # Остановить службу, если она запущена
               fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
-              sudo systemctl start user-service
+              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar /opt/userService/  # Скопировать новый JAR файл в целевую папку
+              sudo systemctl start user-service  # Запустить службу заново
             else
               echo "JAR file not found!"
-              exit 1
-            fi
-
-      - name: SSH into server and restart weatherApiService
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar ]; then
-              echo "JAR file found. Proceeding with service restart."
-              if sudo systemctl is-active --quiet weather-api-service; then
-                sudo systemctl stop weather-api-service
-              fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
-              sudo systemctl start weather-api-service
-            else
-              echo "JAR file not found!"
-              exit 1
-            fi
+              exit 1  # Выйти с ошибкой, если файл не найден
 
       - name: List files on server for debug
         uses: appleboy/ssh-action@master
@@ -117,5 +82,5 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Listing files in /home/xyl1gan4eg/myJavaProjects/weatherProject/"
-            ls -la /home/xyl1gan4eg/myJavaProjects/weatherProject/  # Показать список файлов в целевой папке для отладки
+            echo "Listing files in /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/"
+            ls -la /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/  # Показать список файлов в целевой папке для отладки
