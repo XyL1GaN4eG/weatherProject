@@ -30,7 +30,7 @@ public class UserService {
 
     public TGUser createUser(TGUser TGUser) {
         var createdUser = userRepository.save(TGUser);
-        rabbitTemplate.convertAndSend("create-TGUser", createdUser);
+        rabbitTemplate.convertAndSend(ROUTING_KEY_CREATED, createdUser);
         return createdUser;
     }
 
