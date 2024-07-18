@@ -74,6 +74,8 @@ jobs:
             else
               echo "JAR file not found!"
               exit 1
+            fi
+
 
 
       - name: List files on server for debug
