@@ -41,7 +41,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'  # Указать целевой путь на сервере
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject'  # Указать целевой путь на сервере
           port: 22
           timeout: 30s
           command_timeout: 10m
@@ -56,6 +56,7 @@ jobs:
           proxy_timeout: 30s
           proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
 
+
       - name: SSH into server and restart userService
         uses: appleboy/ssh-action@master
         with:
@@ -64,12 +65,12 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar ]; then
+            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar ]; then
               echo "JAR file found. Proceeding with service restart."
               if sudo systemctl is-active --quiet user-service; then
                 sudo systemctl stop user-service
               fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/targer/userService-0.0.1-SNAPSHOT.jar /opt/userService/
               sudo systemctl start user-service
             else
               echo "JAR file not found!"
