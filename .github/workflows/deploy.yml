@@ -3,36 +3,36 @@ name: Deploy to Ubuntu Server
 on:
   push:
     branches:
-      - main
+      - main  # Запускать workflow при push на ветку main
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Использовать последний доступный образ Ubuntu
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # Проверить репозиторий на машину сборки
 
       - name: Set up JDK 17
         uses: actions/setup-java@v2
         with:
-          distribution: 'temurin'
+          distribution: 'temurin'  # Установить JDK 17 от Temurin
           java-version: '17'
 
       - name: Set environment variables
         run: |
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV  # Установить переменные окружения из секретов GitHub
 
       - name: Debug environment variables
-        run: printenv
+        run: printenv  # Вывести все переменные окружения для отладки
 
       - name: Build userService
-        run: mvn -e -X -B package --file userService/pom.xml
+        run: mvn -e -B package --file userService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
       - name: List built files
-        run: ls -la userService/target
+        run: ls -la userService/target  # Показать список файлов в целевой папке после сборки
 
       - name: Deploy userService to Server
         uses: appleboy/scp-action@master
@@ -40,8 +40,8 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'
+          source: 'userService/target/userService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService'  # Указать целевой путь на сервере
           port: 22
           timeout: 30s
           command_timeout: 10m
@@ -54,7 +54,7 @@ jobs:
           tar_exec: tar
           proxy_port: 22
           proxy_timeout: 30s
-          proxy_use_insecure_cipher: false
+          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
 
       - name: SSH into server and restart userService
         uses: appleboy/ssh-action@master
@@ -64,17 +64,17 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Checking for JAR file..."
-            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar ]; then
+            if [ -f /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar ]; then
               echo "JAR file found. Proceeding with service restart."
               if sudo systemctl is-active --quiet user-service; then
                 sudo systemctl stop user-service
               fi
-              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService.jar /opt/userService/
+              sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
               sudo systemctl start user-service
             else
               echo "JAR file not found!"
               exit 1
-            fi
+
 
       - name: List files on server for debug
         uses: appleboy/ssh-action@master
@@ -84,4 +84,4 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             echo "Listing files in /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/"
-            ls -la /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/
+            ls -la /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/  # Показать список файлов в целевой папке для отладки
