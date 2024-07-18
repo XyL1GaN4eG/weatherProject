@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: weatherApiService
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weatherproject
+    username: username
+    password: password
+    hikari:
+      allow-pool-suspension: true  # Enable Hikari pool suspension for JVM checkpoint restore
+    jpa:
+      hibernate:
+        ddl-auto: none  # Disable automatic schema generation by Hibernate
+        properties:
+          hibernate:
+            allow_jdbc_metadata_access: false  # Disable Hibernate usage of JDBC metadata
+      show-sql: true  # Enable logging of SQL statements
+      properties:
+        hibernate:
+          dialect: org.hibernate.dialect.PostgreSQLDialect  # Specify the dialect for PostgreSQL
+    sql:
+      init:
+        mode: never  # Disable database initialization performed by Spring
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
+weather:
+  api:
+    url: "http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q={city}&aqi=yes"
