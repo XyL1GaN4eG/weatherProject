@@ -6,20 +6,18 @@ spring:
     username: username
     password: password
     hikari:
-      allow-pool-suspension: true  # Enable Hikari pool suspension for JVM checkpoint restore
+      allow-pool-suspension: true  # Включить приостановку пула Hikari для восстановления контрольной точки JVM
   jpa:
+    database-platform: org.hibernate.dialect.PostgreSQL94Dialect  # Указание диалекта для PostgreSQL
     hibernate:
-      ddl-auto: none  # Disable automatic schema generation by Hibernate
+      ddl-auto: none  # Отключить автоматическую генерацию схемы Hibernate
       properties:
         hibernate:
-          allow_jdbc_metadata_access: false  # Disable Hibernate usage of JDBC metadata
-    show-sql: true  # Enable logging of SQL statements
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect  # Specify the dialect for PostgreSQL
+          allow_jdbc_metadata_access: false  # Отключить использование JDBC метаданных Hibernate
+    show-sql: true  # Включить логирование SQL-запросов
   sql:
     init:
-      mode: never  # Disable database initialization performed by Spring
+      mode: never  # Отключить инициализацию базы данных, выполняемую Spring
 
 rabbitmq:
   host: localhost
