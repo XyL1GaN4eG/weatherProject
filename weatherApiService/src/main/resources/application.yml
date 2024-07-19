@@ -1,6 +1,6 @@
 spring:
   application:
-    name: userService
+    name: weatherApiService
   datasource:
     url: jdbc:postgresql://localhost:5432/weatherproject
     username: username
@@ -20,6 +20,13 @@ spring:
   sql:
     init:
       mode: never  # Disable database initialization performed by Spring
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
 
 weather:
   api:
