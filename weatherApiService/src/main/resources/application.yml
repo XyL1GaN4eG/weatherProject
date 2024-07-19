@@ -20,6 +20,8 @@ spring:
   sql:
     init:
       mode: never  # Disable database initialization performed by Spring
+server:
+  port: 8081
 
 rabbitmq:
   host: localhost
