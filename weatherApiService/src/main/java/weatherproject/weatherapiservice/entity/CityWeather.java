@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "city_weather")
 public class CityWeather {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
