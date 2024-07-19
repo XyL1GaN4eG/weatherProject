@@ -20,7 +20,7 @@ public class WeatherRequestListener {
     }
 
     @RabbitListener(queues = "${weather.api.queue.request")
-    public void recieveMessages(String city) {
+    public void receiveMessages(String city) {
         Object[] weather = weatherService.processWeatherRequest(city);
         rabbitTemplate.convertAndSend(responseQueue, weather);
     }

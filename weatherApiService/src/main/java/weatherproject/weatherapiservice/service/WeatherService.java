@@ -1,9 +1,9 @@
 package weatherproject.weatherapiservice.service;
 
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
 import weatherproject.weatherapiservice.client.ApiClient;
 import weatherproject.weatherapiservice.entity.CityWeather;
 import weatherproject.weatherapiservice.repository.WeatherRepository;
@@ -15,15 +15,17 @@ import java.util.List;
 public class WeatherService {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(WeatherService.class);
     private final ApiClient apiClient = new ApiClient();
-    private WeatherRepository weatherRepository;
+    private final WeatherRepository weatherRepository;
 
-    @Value("$weather.api.url")
-    private String url;
+    @Autowired
+    public WeatherService(WeatherRepository weatherRepository) {
+        this.weatherRepository = weatherRepository;
+    }
 
     public Object[] processWeatherRequest(String city) {
         CityWeather cityWeather = weatherRepository.findByCity(city);
 
-        //Если город не найден
+        // Если город не найден
         if (cityWeather == null) {
             Object[] weatherData = apiClient.getWeather(city);
             try {
@@ -31,7 +33,7 @@ public class WeatherService {
                 weatherRepository.save(cityWeather);
                 return weatherData;
             } catch (ClassCastException e) {
-                log.error("Данные о погоде пришли в некорректном формате", e.getMessage());
+                log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
             }
         }
 

@@ -23,13 +23,14 @@ jobs:
         run: |
           echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
           echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
-          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV  # Установить переменные окружения из секретов GitHub
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV  
+          echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" >> $GITHUB_ENV # Установить переменные окружения из секретов GitHub
 
       - name: Debug environment variables
         run: printenv  # Вывести все переменные окружения для отладки
 
       - name: Build weatherApiService
-        run: mvn -e -X -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+        run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
       - name: List built files for weatherApiService
         run: ls -la weatherApiService/target  # Показать список файлов в целевой папке после сборки
