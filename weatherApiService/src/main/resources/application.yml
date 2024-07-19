@@ -9,7 +9,7 @@ spring:
       allow-pool-suspension: true  # Enable Hikari pool suspension for JVM checkpoint restore
   jpa:
     hibernate:
-      ddl-auto: none  # Disable automatic schema generation by Hibernate
+#      ddl-auto: none  # Disable automatic schema generation by Hibernate
       properties:
         hibernate:
           allow_jdbc_metadata_access: false  # Disable Hibernate usage of JDBC metadata
