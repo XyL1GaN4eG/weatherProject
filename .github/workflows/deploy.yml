@@ -29,7 +29,7 @@ jobs:
         run: printenv  # Вывести все переменные окружения для отладки
 
       - name: Build weatherApiService
-        run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+        run: mvn -e -X -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
       - name: List built files for weatherApiService
         run: ls -la weatherApiService/target  # Показать список файлов в целевой папке после сборки
