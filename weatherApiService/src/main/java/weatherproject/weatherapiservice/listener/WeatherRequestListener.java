@@ -1,5 +1,7 @@
 package weatherproject.weatherapiservice.listener;
 
+import weatherproject.weatherapiservice.config.RabbitMQConfig;
+
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,7 +13,7 @@ public class WeatherRequestListener {
     private final WeatherService weatherService;
     private final RabbitTemplate rabbitTemplate;
 
-    @Value("${weather.api.queue.response")
+    @Value(RabbitMQConfig.RESPONSE_QUEUE_NAME)
     private String responseQueue;
 
     public WeatherRequestListener(WeatherService weatherService, RabbitTemplate rabbitTemplate) {
@@ -19,7 +21,7 @@ public class WeatherRequestListener {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @RabbitListener(queues = "${weather.api.queue.request")
+    @RabbitListener(queues = RabbitMQConfig.REQUEST_QUEUE_NAME)
     public void receiveMessages(String city) {
         Object[] weather = weatherService.processWeatherRequest(city);
         rabbitTemplate.convertAndSend(responseQueue, weather);
