@@ -28,6 +28,46 @@ jobs:
       - name: Debug environment variables
         run: printenv  # Вывести все переменные окружения для отладки
 
+      - name: Build weatherApiService
+        run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+
+      - name: List built files for weatherApiService
+        run: ls -la weatherApiService/target  # Показать список файлов в целевой папке после сборки
+
+      - name: Deploy weatherApiService to Server
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService'  # Указать целевой путь на сервере
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: false
+          strip_components: 0
+          overwrite: true
+          tar_dereference: false
+          tar_exec: tar
+          proxy_port: 22
+          proxy_timeout: 30s
+          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
+
+      - name: SSH into server and restart weatherApiService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            echo "Restarting weatherApiService..."
+            sudo systemctl stop weather-api-service || true
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
+            sudo systemctl start weather-api-service
+
       - name: Build userService
         run: mvn -e -B package --file userService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
@@ -68,45 +108,6 @@ jobs:
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
             sudo systemctl start user-service
 
-      - name: Build weatherApiService
-        run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
-
-      - name: List built files for weatherApiService
-        run: ls -la weatherApiService/target  # Показать список файлов в целевой папке после сборки
-
-      - name: Deploy weatherApiService to Server
-        uses: appleboy/scp-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService'  # Указать целевой путь на сервере
-          port: 22
-          timeout: 30s
-          command_timeout: 10m
-          use_insecure_cipher: false
-          rm: false
-          debug: false
-          strip_components: 0
-          overwrite: true
-          tar_dereference: false
-          tar_exec: tar
-          proxy_port: 22
-          proxy_timeout: 30s
-          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
-
-      - name: SSH into server and restart weatherApiService
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            echo "Restarting weatherApiService..."
-            sudo systemctl stop weather-api-service || true
-            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
-            sudo systemctl start weather-api-service
 
       - name: List files on server for debug
         uses: appleboy/ssh-action@master
