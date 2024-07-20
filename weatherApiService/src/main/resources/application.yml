@@ -32,6 +32,5 @@ rabbitmq:
 
 weather:
   api:
-    url:
+    url: "http://api.weatherapi.com/v1/current.json?key=$b754ca0088e64db9afe102203240306&q={city}&aqi=yes"
 #      "http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q={city}&aqi=yes"
-      "http://api.weatherapi.com/v1/current.json?key=$b754ca0088e64db9afe102203240306&q={city}&aqi=yes"
