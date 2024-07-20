@@ -26,7 +26,7 @@ public class ApiClient {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
 
-    @PostConstruct
+    @PostConstruct //выполняется сразу после инициализации класса
     public void init() {
         log.info("Initialized ApiClient with URL: {}", url);
     }
@@ -37,7 +37,7 @@ public class ApiClient {
                 .GET()
                 .build();
 
-        log.info("Отправляем HTTP запрос");
+        log.info("Отправляем HTTP запрос: {}", request);
 
         return fetchData(getResponse(request));
     }
