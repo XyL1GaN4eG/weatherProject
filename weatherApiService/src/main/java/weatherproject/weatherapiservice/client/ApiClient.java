@@ -5,6 +5,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -32,6 +33,7 @@ public class ApiClient {
     }
 
     public Object[] getWeather(String city) {
+        log.info("Метод getWeather успешно вызвался для города: {}", city);
         var urlForRequest = url.replace("{city}", city);
         log.info("Собираем http реквест на адрес: {}", urlForRequest);
         HttpRequest request = HttpRequest.newBuilder()
