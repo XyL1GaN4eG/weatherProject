@@ -32,9 +32,10 @@ public class ApiClient {
     }
 
     public Object[] getWeather(String city) {
-        log.info("Собираем http реквест");
+        var urlForRequest = url.replace("{city}", city);
+        log.info("Собираем http реквест на адрес: {}", urlForRequest);
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(url.replace("{city}", city)))
+                .uri(URI.create(urlForRequest))
                 .GET()
                 .build();
 
