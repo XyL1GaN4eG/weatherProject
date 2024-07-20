@@ -1,9 +1,9 @@
 package weatherproject.weatherapiservice.service;
 
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
-import org.springframework.beans.factory.annotation.Autowired;
 import weatherproject.weatherapiservice.client.ApiClient;
 import weatherproject.weatherapiservice.entity.CityWeather;
 import weatherproject.weatherapiservice.repository.WeatherRepository;
@@ -31,10 +31,15 @@ public class WeatherService {
         if (cityWeather == null) {
             log.info("Город не найден. Начинаем запрос к API");
             Object[] weatherData = apiClient.getWeather(city);
-            log.info("Данные о погоде после запроса к API (в processWeatherRequest): {}", weatherData);
+            log.info(
+                    "Данные о погоде после запроса к API " +
+                            "(в processWeatherRequest): {}, {}, {}",
+                    weatherData[0],
+                    weatherData[1],
+                    weatherData[2]);
             try {
                 log.info("Попытка распарсить данные");
-                cityWeather = new CityWeather((Long) weatherData[0], (String) weatherData[1], (Double) weatherData[2], (String) weatherData[3]);
+                cityWeather = new CityWeather((String) weatherData[0], (Double) weatherData[1], (String) weatherData[2]);
                 weatherRepository.save(cityWeather);
                 log.info("Данные о погоде в городе {} сохранены в базу данных", city);
                 return weatherData;
