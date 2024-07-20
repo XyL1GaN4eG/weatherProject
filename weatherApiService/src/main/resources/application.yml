@@ -1,3 +1,4 @@
+#TODO: добавить поддержку гитхаб секретс
 spring:
   application:
     name: weatherApiService
