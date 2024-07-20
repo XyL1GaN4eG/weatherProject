@@ -32,6 +32,7 @@ public class ApiClient {
     }
 
     public Object[] getWeather(String city) {
+        log.info("Собираем http реквест");
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url.replace("{city}", city)))
                 .GET()
