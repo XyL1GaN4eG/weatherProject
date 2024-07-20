@@ -1,5 +1,6 @@
 package weatherproject.weatherapiservice.config;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -11,6 +12,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@Slf4j
 public class RabbitMQConfig {
     // Имя обменника
     public static final String EXCHANGE_NAME = "weather-exchange";
@@ -24,25 +26,27 @@ public class RabbitMQConfig {
     public static final String ROUTING_KEY_NOTIFICATION = "weather.notification";
 
 
-
-
-    // Создаем новую очередь для уведомлений с постгрес о среднем значении
     @Bean
     public Queue weatherNotificationQueue() {
+        log.debug("Создаем очередь для уведомлений с постгрес о среднем значении");
         return new Queue(NOTIFICATION_QUEUE_NAME);
     }
+
     @Bean
     public Queue weatherRequestQueue() {
+        log.debug("Создаем очередь для запросов");
         return new Queue(REQUEST_QUEUE_NAME);
     }
 
     @Bean
     public Queue weatherResponseQueue() {
+        log.debug("Создаем очередь для ответов");
         return new Queue(RESPONSE_QUEUE_NAME);
     }
 
     @Bean
     public TopicExchange exchange() {
+        log.debug("Создаем обменник");
         return new TopicExchange(EXCHANGE_NAME);
     }
 

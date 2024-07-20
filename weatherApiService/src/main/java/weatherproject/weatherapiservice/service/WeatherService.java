@@ -1,6 +1,6 @@
 package weatherproject.weatherapiservice.service;
 
-import org.slf4j.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -12,8 +12,8 @@ import java.util.List;
 
 @Component
 @ConfigurationProperties(prefix = "weather.api")
+@Slf4j
 public class WeatherService {
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(WeatherService.class);
     private final ApiClient apiClient;
     private final WeatherRepository weatherRepository;
 

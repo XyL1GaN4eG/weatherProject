@@ -23,8 +23,7 @@ public class TemperatureChangeNotifier {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(TemperatureChangeNotifier.class);
 
     // Автоматически подставляемый DataSource, который настроен в конфигурации Spring
-    @Autowired
-    private DataSource dataSource;
+    private final DataSource dataSource;
 
     private final Queue notificationQueue;
 
@@ -35,15 +34,20 @@ public class TemperatureChangeNotifier {
     private Thread listenerThread;
 
     @Autowired
-    public TemperatureChangeNotifier(RabbitTemplate rabbitTemplate, RabbitMQConfig rabbitMQConfig) {
+    public TemperatureChangeNotifier(RabbitTemplate rabbitTemplate, RabbitMQConfig rabbitMQConfig, DataSource dataSource) {
         this.rabbitTemplate = rabbitTemplate;
         this.notificationQueue = rabbitMQConfig.weatherNotificationQueue();
+        this.dataSource = dataSource;
+    }
+
+    @PostConstruct
+    public void init() {
+        log.info("TemperatureChangeNotifier инициализирован");
     }
 
     // Метод, который будет выполнен после создания бина (инициализация)
     @PostConstruct
     public void start() {
-        log.info("Начинаем поток для TemperatureChangeNotifier");
         // Создаем и запускаем новый поток для прослушивания уведомлений
         listenerThread = new Thread(() -> {
             log.info("TemperatureChangeNotifier started");
@@ -76,7 +80,7 @@ public class TemperatureChangeNotifier {
                 log.error("Исключение при установке соединения: {}", e.getMessage());
             }
         });
-        // Запускаем поток
+        log.info("Начинаем поток для TemperatureChangeNotifier");
         listenerThread.start();
     }
 
@@ -85,15 +89,16 @@ public class TemperatureChangeNotifier {
     public void stop() {
         // Прерываем поток, если он активен
         if (listenerThread != null && listenerThread.isAlive()) {
+            log.info("Прерываем поток для TemperatureChangeNotifier");
             listenerThread.interrupt();
         }
         // Закрываем соединение с базой данных, если оно открыто
         if (connection != null) {
+            log.info("Закрываем соединение с бд");
             try {
                 connection.close();
             } catch (SQLException e) {
-                // Выводим сообщение об ошибке в консоль
-                e.printStackTrace();
+                log.error("Ошибка при закрытии соединения: {}", e.getMessage());
             }
         }
     }

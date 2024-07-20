@@ -1,5 +1,6 @@
 package weatherproject.weatherapiservice.listener;
 
+import lombok.extern.slf4j.Slf4j;
 import weatherproject.weatherapiservice.config.RabbitMQConfig;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 import weatherproject.weatherapiservice.service.WeatherService;
 
 @Component
+@Slf4j
 public class WeatherRequestListener {
     private final WeatherService weatherService;
     private final RabbitTemplate rabbitTemplate;
@@ -23,6 +25,7 @@ public class WeatherRequestListener {
 
     @RabbitListener(queues = RabbitMQConfig.REQUEST_QUEUE_NAME)
     public void receiveMessages(String city) {
+        log.info("Получено сообщение от внешнего микросервиса получить погоду по городу: {}", city);
         Object[] weather = weatherService.processWeatherRequest(city);
         rabbitTemplate.convertAndSend(responseQueue, weather);
     }
