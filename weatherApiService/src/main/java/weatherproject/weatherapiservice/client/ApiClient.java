@@ -1,6 +1,5 @@
 package weatherproject.weatherapiservice.client;
 
-
 import lombok.NoArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -9,13 +8,14 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 
-//Класс для работы с апи погоды
+// Класс для работы с апи погоды
 @Component
 @NoArgsConstructor
 public class ApiClient {
@@ -26,7 +26,12 @@ public class ApiClient {
 
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
 
-    public Object[] getWeather(String city)  {
+    @PostConstruct
+    public void init() {
+        log.info("Initialized ApiClient with URL: {}", url);
+    }
+
+    public Object[] getWeather(String city) {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(url.replace("{city}", city)))
                 .GET()
@@ -69,8 +74,7 @@ public class ApiClient {
             log.error("Произошла ошибка ParseException при парсинге JSON ответа:", e);
             throw new RuntimeException(e);
         }
-        log.info("Данные успешно распарсились: " +
-                "Город = " + location + ", Температура = " + temperature + "°C, Состояние погоды = " + condition);
+        log.info("Данные успешно распарсились: Город = {}, Температура = {}°C, Состояние погоды = {}", location, temperature, condition);
         return new Object[]{location, temperature, condition};
     }
 }
