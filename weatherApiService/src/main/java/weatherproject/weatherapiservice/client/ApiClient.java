@@ -1,10 +1,12 @@
 package weatherproject.weatherapiservice.client;
 
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -16,18 +18,15 @@ import java.net.http.HttpResponse;
 
 // Класс для работы с апи погоды
 @Component
+@NoArgsConstructor(force = true)
 @RequiredArgsConstructor
 public class ApiClient {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
 
 
-    //@Value("${weather.api.url}")
-    private String url;
-
-    public ApiClient(String url) {
-        this.url = url;
-    }
+    @Value("${weather.api.url}")
+    private final String url;
 
     @PostConstruct //выполняется сразу после инициализации класса
     public void init() {
