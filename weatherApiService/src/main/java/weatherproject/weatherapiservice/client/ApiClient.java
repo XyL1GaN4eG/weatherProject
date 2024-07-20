@@ -1,12 +1,10 @@
 package weatherproject.weatherapiservice.client;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -18,14 +16,18 @@ import java.net.http.HttpResponse;
 
 // Класс для работы с апи погоды
 @Component
-@NoArgsConstructor
+@RequiredArgsConstructor
 public class ApiClient {
-    @Value("${weather.api.url}")
+    private static final HttpClient client = HttpClient.newHttpClient();
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
+
+
+    //@Value("${weather.api.url}")
     private String url;
 
-    private static final HttpClient client = HttpClient.newHttpClient();
-
-    private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
+    public ApiClient(String url) {
+        this.url = url;
+    }
 
     @PostConstruct //выполняется сразу после инициализации класса
     public void init() {
@@ -33,7 +35,7 @@ public class ApiClient {
     }
 
     public Object[] getWeather(String city) {
-        log.info("Метод getWeather успешно вызвался для города: {}, для запроса по следующему api: {}", city, url);
+        log.info("Метод getWeather успешно вызвался для города: {}, для запроса по следующему api: {}", city, this.url);
         var urlForRequest = url.replace("{city}", city);
         log.info("Собираем http реквест на адрес: {}", urlForRequest);
         HttpRequest request = HttpRequest.newBuilder()

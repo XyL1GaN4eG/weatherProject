@@ -14,12 +14,13 @@ import java.util.List;
 @ConfigurationProperties(prefix = "weather.api")
 public class WeatherService {
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(WeatherService.class);
-    private final ApiClient apiClient = new ApiClient();
+    private final ApiClient apiClient;
     private final WeatherRepository weatherRepository;
 
     @Autowired
-    public WeatherService(WeatherRepository weatherRepository) {
+    public WeatherService(WeatherRepository weatherRepository, ApiClient apiClient) {
         this.weatherRepository = weatherRepository;
+        this.apiClient = apiClient;
     }
 
     public Object[] processWeatherRequest(String city) {
