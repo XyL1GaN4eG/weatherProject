@@ -30,7 +30,7 @@ jobs:
         run: printenv  # Вывести все переменные окружения для отладки
 
       - name: Build weatherApiService
-        run: mvn -e -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+        run: mvn -B package --file weatherApiService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
       - name: List built files for weatherApiService
         run: ls -la weatherApiService/target  # Показать список файлов в целевой папке после сборки
@@ -70,7 +70,7 @@ jobs:
             sudo systemctl start weather-api-service
 
       - name: Build userService
-        run: mvn -e -B package --file userService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+        run: mvn -B package --file userService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 
       - name: List built files for userService
         run: ls -la userService/target  # Показать список файлов в целевой папке после сборки
