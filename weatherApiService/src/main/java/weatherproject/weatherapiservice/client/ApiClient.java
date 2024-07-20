@@ -6,6 +6,7 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.slf4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -18,15 +19,18 @@ import java.net.http.HttpResponse;
 
 // Класс для работы с апи погоды
 @Component
-@NoArgsConstructor(force = true)
-@RequiredArgsConstructor
 public class ApiClient {
     private static final HttpClient client = HttpClient.newHttpClient();
     private static final Logger log = org.slf4j.LoggerFactory.getLogger(ApiClient.class);
 
 
-    @Value("${weather.api.url}")
+//    @Value("${weather.api.url}")
     private final String url;
+
+    @Autowired
+    public ApiClient(@Value("${weather.api.url}") String url) {
+        this.url = url;
+    }
 
     @PostConstruct //выполняется сразу после инициализации класса
     public void init() {
