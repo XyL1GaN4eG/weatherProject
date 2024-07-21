@@ -50,7 +50,7 @@ public class TemperatureChangeNotifier {
     public void start() {
         // Создаем и запускаем новый поток для прослушивания уведомлений
         listenerThread = new Thread(() -> {
-            log.info("TemperatureChangeNotifier started");
+            log.info("TemperatureChangeNotifier начал поток");
             try {
                 log.info("Получаем соединение в бд");
                 connection = dataSource.getConnection();
@@ -67,7 +67,12 @@ public class TemperatureChangeNotifier {
                         PGNotification[] notificate = connection.unwrap(org.postgresql.PGConnection.class).getNotifications(5000);
 
                         // Обработка уведомлений (тут можно добавить вашу логику)
-                        log.info("Получено уведомление от триггера с бд: {}", notificate[0]);
+                        if (notificate != null && notificate.length > 0) {
+                            log.info("Получено уведомление от триггера с бд: {}", notificate[0]);
+                            rabbitTemplate.convertAndSend(notificationQueue.getName(), notificate[0].getParameter());
+                        } else {
+                            log.info("Уведомления нет или массив уведомлений пуст");
+                        }
 
                         rabbitTemplate.convertAndSend(notificationQueue.getName(), notificate[0].getParameter());
 
