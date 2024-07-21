@@ -15,7 +15,7 @@ public class WeatherRequestListener {
     private final WeatherService weatherService;
     private final RabbitTemplate rabbitTemplate;
 
-    @Value(RabbitMQConfig.RESPONSE_QUEUE_NAME)
+    @Value(RabbitMQConfig.RESPONSE_QUEUE)
     private String responseQueue;
 
     public WeatherRequestListener(WeatherService weatherService, RabbitTemplate rabbitTemplate) {
@@ -23,8 +23,8 @@ public class WeatherRequestListener {
         this.rabbitTemplate = rabbitTemplate;
     }
 
-    @RabbitListener(queues = RabbitMQConfig.REQUEST_QUEUE_NAME)
-    public void receiveMessages(String city) {
+    @RabbitListener(queues = RabbitMQConfig.REQUEST_QUEUE)
+    public void receiveRequest(String city) {
         log.info("Получено сообщение от внешнего микросервиса получить погоду по городу: {}", city);
         Object[] weather = weatherService.processWeatherRequest(city);
         rabbitTemplate.convertAndSend(responseQueue, weather);

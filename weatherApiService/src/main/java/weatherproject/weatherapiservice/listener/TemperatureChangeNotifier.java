@@ -94,7 +94,7 @@ public class TemperatureChangeNotifier {
         }
         // Закрываем соединение с базой данных, если оно открыто
         if (connection != null) {
-            log.info("Закрываем соединение с бд");
+            log.info("Закрываем соединение прослушивателя триггера с бд");
             try {
                 connection.close();
             } catch (SQLException e) {

@@ -17,7 +17,7 @@ public class WeatherUpdateScheduler {
     //Каждый час сохраняет погоду в БД, чтобы если вдруг сработал триггер
     @Scheduled(cron = "0 0 * * * *")
     public void updateWeather() {
-        log.info("Updating weather data...");
+        log.info("Ежечасное обновление погоды началось...");
         weatherService.updateAllCitiesWeather();
     }
 

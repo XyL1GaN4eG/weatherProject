@@ -8,6 +8,8 @@ import weatherproject.weatherapiservice.client.ApiClient;
 import weatherproject.weatherapiservice.entity.CityWeather;
 import weatherproject.weatherapiservice.repository.WeatherRepository;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -28,8 +30,8 @@ public class WeatherService {
         CityWeather cityWeather = weatherRepository.findByCity(city);
         log.info("Полученные данные о погоде:", cityWeather);
         // Если город не найден
-        if (cityWeather == null) {
-            log.info("Город не найден. Начинаем запрос к API");
+        if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1) {
+            log.info("Город не найден или прошло больше часа с последнего обновления. Начинаем запрос к API");
             Object[] weatherData = apiClient.getWeather(city);
             log.info(
                     "Данные о погоде после запроса к API " +
@@ -65,11 +67,20 @@ public class WeatherService {
     public void updateAllCitiesWeather() {
         var cities = weatherRepository.findAll();
         for (CityWeather cityWeather : cities) {
+
+            if (!(Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1)) {
+                log.info("Данные о погоде в городе {} не обновляются, так как прошло меньше часа с последнего обновления", cityWeather.getCity());
+                continue;
+            }
             var weatherDataFromApi = apiClient.getWeather(cityWeather.getCity());
-            cityWeather.setCity(weatherDataFromApi[0].toString());
+//            cityWeather.setCity(weatherDataFromApi[0].toString());
             cityWeather.setTemperature((Double) weatherDataFromApi[1]);
             cityWeather.setCondition((String) weatherDataFromApi[2]);
             weatherRepository.save(cityWeather);
+            log.info("Данные о погоде в городе {} обновлены в базу данных: {}, {}",
+                    cityWeather.getCity(),
+                    cityWeather.getTemperature(),
+                    cityWeather.getCondition());
         }
     }
 }

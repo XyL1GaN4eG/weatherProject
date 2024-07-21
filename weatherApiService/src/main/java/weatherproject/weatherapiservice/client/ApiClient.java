@@ -23,7 +23,6 @@ import java.net.http.HttpResponse;
 public class ApiClient {
     private static final HttpClient client = HttpClient.newHttpClient();
 
-//    @Value("${weather.api.url}")
     private final String url;
 
     @Autowired
