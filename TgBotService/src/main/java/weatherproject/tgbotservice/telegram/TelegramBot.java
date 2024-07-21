@@ -13,6 +13,8 @@ import weatherproject.tgbotservice.config.RabbitMQConfig;
 import javax.annotation.PostConstruct;
 import javax.security.auth.callback.CallbackHandler;
 
+import java.net.http.HttpResponse;
+
 import static weatherproject.tgbotservice.config.RabbitMQConfig.*;
 import static weatherproject.tgbotservice.utils.Consts.CANT_UNDERSTAND;
 
@@ -36,8 +38,6 @@ public class TelegramBot {
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
-
-        scheduleNotifications();
     }
 
     private void onUpdateReceived(Update update) {
@@ -80,11 +80,32 @@ public class TelegramBot {
 
     //TODO: переписать для поддержки триггера бд
     @RabbitListener(queues = NOTIFICATION_QUEUE)
-    private void sendNotification(Object[] updatedWeatherData) {
-        // Пример отправки уведомления
+    private void sendNotification(String jsonWeather) {
 
         String chatId = "123456789"; // Укажите правильный chatId
         SendMessage sendMessage = new SendMessage(chatId, "Ежедневное уведомление");
         sendMessage(sendMessage);
+    }
+
+    private Object[] fetchData(HttpResponse<String> response) {
+        JSONParser parser = new JSONParser();
+        double temperature;
+        String location;
+        String condition;
+
+        try {
+            var jsonResponse = (JSONObject) parser.parse(response.body());
+            JSONObject current = (JSONObject) jsonResponse.get("current");
+            temperature = (double) current.get("temp_c");
+            JSONObject locationObj = (JSONObject) jsonResponse.get("location");
+            location = (String) locationObj.get("name");
+            JSONObject conditionObj = (JSONObject) current.get("condition");
+            condition = (String) conditionObj.get("text");
+        } catch (ParseException e) {
+            log.error("Произошла ошибка ParseException при парсинге JSON ответа:", e);
+            throw new RuntimeException(e);
+        }
+        log.info("Данные успешно распарсились: Город = {}, Температура = {}°C, Состояние погоды = {}", location, temperature, condition);
+        return new Object[]{location, temperature, condition};
     }
 }

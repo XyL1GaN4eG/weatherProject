@@ -64,18 +64,17 @@ public class TemperatureChangeNotifier {
                         stmt.execute("LISTEN my_notification");
 
                         // Проверяем наличие новых уведомлений с таймаутом в 5000 мс
-                        PGNotification[] notificate = connection.unwrap(org.postgresql.PGConnection.class).getNotifications(5000);
+                        PGNotification[] notifications = connection.unwrap(org.postgresql.PGConnection.class).getNotifications(5000);
 
-                        // Обработка уведомлений (тут можно добавить вашу логику)
-                        if (notificate != null && notificate.length > 0) {
-                            log.info("Получено уведомление от триггера с бд: {}", notificate[0]);
-                            rabbitTemplate.convertAndSend(notificationQueue.getName(), notificate[0].getParameter());
-                        } else {
-                            log.info("Уведомления нет или массив уведомлений пуст");
+                        for (PGNotification notification : notifications) {
+                            // Обработка уведомлений (тут можно добавить вашу логику)
+                            if (notification != null) {
+                                log.info("Получено уведомление от триггера с бд: {}", notification);
+                                rabbitTemplate.convertAndSend(notificationQueue.getName(), notification.getParameter());
+                            } else {
+                                log.info("Уведомления нет или массив уведомлений пуст");
+                            }
                         }
-
-                        rabbitTemplate.convertAndSend(notificationQueue.getName(), notificate[0].getParameter());
-
                     } catch (SQLException e) {
                         // Выводим сообщение об ошибке в консоль
                         log.error("Произошла ошибка во время прослушивания уведомлений: {}", e.getMessage());
