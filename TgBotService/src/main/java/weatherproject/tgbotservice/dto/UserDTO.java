@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDTO {
     private Long chatId;
-    private String name;
-    private Long city;
+    private String city;
+    private String state;
 }

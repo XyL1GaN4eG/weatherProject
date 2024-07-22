@@ -1,4 +1,4 @@
-#TODO: добавить поддержку гитхаб секретс
+#TODO: remove hardcoding
 spring:
   application:
     name: userService
