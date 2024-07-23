@@ -41,7 +41,7 @@ jobs:
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
           ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          mv /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+          sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
           EOF
 
       - name: SSH into server and restart userService
