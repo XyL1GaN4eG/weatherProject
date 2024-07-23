@@ -1,7 +1,7 @@
 #TODO: remove hardcoding
 spring:
   application:
-    name: TgBotService
+    name: tgBotService
   datasource:
     url: jdbc:postgresql://localhost:5432/weatherproject
     username: username

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -11,7 +12,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @Slf4j
 @Service
-
 public class GeocodingClient {
 
     private static final String NOMINATIM_API_URL = "https://nominatim.openstreetmap.org/reverse?format=json";
@@ -19,6 +19,7 @@ public class GeocodingClient {
     private final RestTemplate restTemplate;
 
     // Конструктор для инъекции RestTemplate
+    @Autowired
     public GeocodingClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
