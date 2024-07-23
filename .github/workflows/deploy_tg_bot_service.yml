@@ -15,7 +15,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEYz }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo rmdir -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
 
@@ -24,7 +24,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           source: tgBotService/
           target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
 
@@ -33,7 +33,7 @@ jobs:
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SERVER_SSH_KEY }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo echo "Building tgBotService on server..."
             sudo cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
@@ -52,11 +52,3 @@ jobs:
             sudo systemctl stop tg-bot-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service
-
-      - name: Cleanup
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-        run: |
-          sudo ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          sudo rmdir -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/src
