@@ -36,12 +36,13 @@ jobs:
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
           mv /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+          EOF
 
       - name: SSH into server and restart userService
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
           echo "Restarting userService..."
-                      sudo systemctl stop user-service || true
-                      sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
-                      sudo systemctl start user-service
-        uses: appleboy/ssh-action@v0.1.6
+          sudo systemctl stop user-service || true
+          sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+          sudo systemctl start user-service
+          EOF
