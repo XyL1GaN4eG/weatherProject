@@ -35,15 +35,6 @@ jobs:
           echo "Build completed."
           EOF
 
-      - name: Deploy userService JAR to Server services
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-        run: |
-          ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
-          EOF
-
       - name: SSH into server and restart userService
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
@@ -52,6 +43,6 @@ jobs:
           ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
           echo "Restarting userService..."
           sudo systemctl stop user-service || true
-          sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+#          sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
           sudo systemctl start user-service
           EOF
