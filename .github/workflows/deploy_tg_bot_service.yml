@@ -17,7 +17,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
-            sudo rmdir -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
+            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
 
       - name: copy tgBotService source cod via ssh
         uses: appleboy/scp-action@v0.1.7
