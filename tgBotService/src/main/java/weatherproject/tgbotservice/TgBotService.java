@@ -3,15 +3,16 @@ package weatherproject.tgbotservice;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ParseMode;
 import com.pengrad.telegrambot.request.SendMessage;
 import com.pengrad.telegrambot.response.SendResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.function.Consumer;
 
-@Component
+@Service
 public class TgBotService {
     private final TelegramBot telegramBot;
 
@@ -24,24 +25,24 @@ public class TgBotService {
     public void init() {
         telegramBot.setUpdatesListener(updates -> {
             for (Update update : updates) {
-                handleUpdate(update);
+                if (update.message() != null) {
+                    long chatId = update.message().chat().id();
+                    String messageText = update.message().text();
+
+                    // Отправка сообщения обратно
+                    SendMessage message = new SendMessage(chatId, messageText)
+                            .parseMode(ParseMode.Markdown);
+                    SendResponse response = telegramBot.execute(message);
+
+                    // Логирование статуса ответа
+                    if (response.isOk()) {
+                        System.out.println("Message sent: " + messageText);
+                    } else {
+                        System.err.println("Failed to send message: " + response.description());
+                    }
+                }
             }
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
-    }
-
-    private void handleUpdate(Update update) {
-        if (update.message() != null && update.message().text() != null) {
-            String chatId = update.message().chat().id().toString();
-            String receivedText = update.message().text();
-
-            SendMessage request = new SendMessage(chatId, receivedText);
-            SendResponse sendResponse = telegramBot.execute(request);
-
-            if (!sendResponse.isOk()) {
-                // Обработка ошибок при отправке сообщения
-                System.err.println("Ошибка отправки сообщения: " + sendResponse.description());
-            }
-        }
     }
 }
