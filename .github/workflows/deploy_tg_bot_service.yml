@@ -17,7 +17,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
-            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/
+            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/ 2>/dev/null
 
       - name: copy tgBotService source cod via ssh
         uses: appleboy/scp-action@v0.1.7
@@ -51,3 +51,12 @@ jobs:
             sudo systemctl stop tg-bot-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service
+
+      - name: Cleanup
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/ 2>/dev/null
