@@ -56,4 +56,3 @@ public class TgBotService implements SpringLongPollingBot, LongPollingSingleThre
         System.out.println("Registered bot running state is: " + botSession.isRunning());
     }
 }
-}
