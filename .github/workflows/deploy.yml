@@ -29,11 +29,8 @@ jobs:
       - name: Debug environment variables
         run: printenv  # Вывести все переменные окружения для отладки
 
-
-
-
       - name: Deploy source code weatherService to Server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -55,7 +52,7 @@ jobs:
           proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файлы на удаленный сервер
 
       - name: Deploy source code userService to Server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -74,11 +71,10 @@ jobs:
           tar_exec: tar
           proxy_port: 22
           proxy_timeout: 30s
-          proxy_use_insecure_cipher: fals
-
+          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файлы на удаленный сервер
 
       - name: SSH into server and build projects
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -86,47 +82,12 @@ jobs:
           script: |
             echo "Building projects on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/src/
-#            mvn -B package --file TgBotService/pom.xml
             mvn -B package --file weatherApiService/pom.xml
             mvn -B package --file userService/pom.xml
             echo "Build completed."
 
-#      - name: Deploy TgBotService to Server
-#        uses: appleboy/scp-action@master
-#        with:
-#          host: ${{ secrets.SERVER_HOST }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          source: '/home/xyl1gan4eg/myJavaProjects/weatherProject/src/TgBotService/target/TgBotService-0.0.1-SNAPSHOT.jar'
-#          target: '/opt/TgBotService/'
-#          port: 22
-#          timeout: 30s
-#          command_timeout: 10m
-#          use_insecure_cipher: false
-#          rm: false
-#          debug: false
-#          strip_components: 0
-#          overwrite: true
-#          tar_dereference: false
-#          tar_exec: tar
-#          proxy_port: 22
-#          proxy_timeout: 30s
-#          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
-#
-#      - name: SSH into server and restart TgBotService
-#        uses: appleboy/ssh-action@master
-#        with:
-#          host: ${{ secrets.SERVER_HOST }}
-#          username: ${{ secrets.SERVER_USERNAME }}
-#          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          script: |
-#            echo "Restarting TgBotService..."
-#            sudo systemctl stop tg-bot-service || true
-#            sudo cp /opt/TgBotService/TgBotService-0.0.1-SNAPSHOT.jar /opt/TgBotService/
-#            sudo systemctl start tg-bot-service
-
       - name: Deploy weatherApiService to Server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -148,7 +109,7 @@ jobs:
           proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
 
       - name: SSH into server and restart weatherApiService
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -160,7 +121,7 @@ jobs:
             sudo systemctl start weather-api-service
 
       - name: Deploy userService to Server
-        uses: appleboy/scp-action@master
+        uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -182,7 +143,7 @@ jobs:
           proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
 
       - name: SSH into server and restart userService
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
@@ -194,7 +155,7 @@ jobs:
             sudo systemctl start user-service
 
       - name: Clean up source code on server
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
