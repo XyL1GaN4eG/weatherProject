@@ -29,7 +29,7 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
-          sudo ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
+          ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
           sudo echo "Building tgBotService on server..."
           sudo cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
           sudo mvn -B package
