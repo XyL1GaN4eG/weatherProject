@@ -20,7 +20,7 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
-          scp -o StrictHostKeyChecking=no -r ./userService ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/
+          scp -o StrictHostKeyChecking=no -r ./userService ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/xyl1gan4eg/myJavaProjects/weatherProject/
 
 
       - name: SSH into server and build userService
@@ -32,7 +32,7 @@ jobs:
           port: 22
           script: |
             echo "Building userService on server..."
-            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/src/
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/
             mvn -B package
             echo "Build completed."
 
