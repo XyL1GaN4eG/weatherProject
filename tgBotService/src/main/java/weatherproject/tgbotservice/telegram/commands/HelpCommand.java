@@ -1,15 +1,16 @@
-//package weatherproject.tgbotservice.telegram.commands;
-//
-//import com.pengrad.telegrambot.model.Update;
-//import com.pengrad.telegrambot.request.SendMessage;
-//import org.springframework.stereotype.Component;
-//import weatherproject.tgbotservice.utils.Constants;
-//
-//
-//@Component
-//public class HelpCommand implements Command{
-//    @Override
-//    public SendMessage apply(Update update) {
-//        return new SendMessage(update.message().chat().id(), Constants.HELP_MESSAGE);
-//    }
-//}
+package weatherproject.tgbotservice.telegram.commands;
+
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import weatherproject.tgbotservice.dto.UserDTO;
+import weatherproject.tgbotservice.utils.Constants;
+
+
+@Component
+public class HelpCommand implements Command{
+    @Override
+    public SendMessage apply(UserDTO userDTO, Update update) {
+        return new SendMessage(update.getMessage().getChatId().toString(), Constants.HELP_MESSAGE);
+    }
+}

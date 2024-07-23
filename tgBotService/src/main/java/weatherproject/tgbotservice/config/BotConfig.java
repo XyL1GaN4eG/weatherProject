@@ -1,17 +1,21 @@
-//package weatherproject.tgbotservice;
-//
-//import com.pengrad.telegrambot.TelegramBot;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//
-//@Configuration
-//public class BotConfig {
-//
-////    @Value("${bot.token}")
-////    private static String botToken;
-//    @Bean
-//    public TelegramBot telegramBot() {
-//        return new TelegramBot("7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8");
-//    }
-//}
+package weatherproject.tgbotservice.config;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.stereotype.Component;
+import weatherproject.tgbotservice.telegram.TelegramBot;
+
+@Component
+@ConfigurationProperties(prefix = "bot")
+@Data
+@PropertySource("classpath:application.yml")
+public class BotConfig {
+
+    String name;
+
+    String token;
+
+}

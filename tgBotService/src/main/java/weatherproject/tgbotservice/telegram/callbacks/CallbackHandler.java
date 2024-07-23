@@ -1,39 +1,43 @@
-//package weatherproject.tgbotservice.telegram.callbacks;
-//
-//import com.pengrad.telegrambot.model.Update;
-//import com.pengrad.telegrambot.request.SendMessage;
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.stereotype.Component;
-//import weatherproject.tgbotservice.clients.GeocodingClient;
-//import weatherproject.tgbotservice.clients.WeatherServiceClient;
-//import weatherproject.tgbotservice.dto.UserDTO;
-//import weatherproject.tgbotservice.telegram.UserState;
-//
-//import static weatherproject.tgbotservice.clients.GoogleTranslateClient.translateRuToEng;
-//import static weatherproject.tgbotservice.utils.Constants.ALREADY_USER;
-//
-//@RequiredArgsConstructor
-//@Component
-//public class CallbackHandler {
-//    private final GeocodingClient geocodingClient;
-//    private final WeatherServiceClient weatherServiceClient;
-//
-//    public SendMessage handleCallback(UserDTO currentUser, Update update) {
-//        var chatId = update.message().chat().id();
-//        var location = update.message().location();
-//        var text = update.message().text();
-//        String city;
-//
-//        //Если пользователь отправил геолокацию, то получаем название города
-//        city = location != null ? translateRuToEng(geocodingClient.getCityByCoordinates(location.latitude(), location.longitude())) : "null";
-//        String textToReply = "Просим прощения, город или команда не найдены.";
-//
-//        var currentState = (UserState) UserState.valueOf(currentUser.getState());
+package weatherproject.tgbotservice.telegram.callbacks;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+import org.telegram.telegrambots.meta.api.objects.Update;
+import weatherproject.tgbotservice.clients.GeocodingClient;
+import weatherproject.tgbotservice.clients.WeatherServiceClient;
+import weatherproject.tgbotservice.dto.UserDTO;
+import weatherproject.tgbotservice.telegram.UserState;
+
+@RequiredArgsConstructor
+@Component
+public class CallbackHandler {
+    private final GeocodingClient geocodingClient;
+    private final WeatherServiceClient weatherServiceClient;
+
+    public SendMessage handleCallback(UserDTO currentUser, Update update) {
+        var chatId = update.getMessage().getChatId();
+        var location = update.getMessage().getLocation();
+        var text = update.getMessage().getText();
+        String city = "Извините, произошла ошибка";
+
+        //Если пользователь отправил геолокацию, то получаем название города
+//        city = location != null ? translateRuToEng(geocodingClient.getCityByCoordinates(location.getLatitude(), location.getLatitude())) : "null";
+        String textToReply = "Просим прощения, город не найден.";
+
+        var currentState = (UserState) UserState.valueOf(currentUser.getState());
 //        switch (currentState) {
 //            case START: {
-//                if (!text.trim().isEmpty()) {
-//                    textToReply = weatherServiceClient.getFormattedWeatherByCity(text.replace(" ", "-"));
+//                if (update.getMessage().hasText()) {
+//                    if (!text.trim().isEmpty()) {
+//                        city = (text.replace(" ", "-"));
+//                    } else if (update.getMessage().hasLocation()) {
+//                        city = geocodingClient.getCityByCoordinates(
+//                                update.getMessage().getLocation().getLatitude(),
+//                                update.getMessage().getLocation().getLongitude());
+//
+//                    }
+//                    textToReply = weatherServiceClient.getFormattedWeatherByCity(city);
 //                }
 //                break;
 //            }
@@ -43,8 +47,20 @@
 //                        .replace("{weather}", weatherServiceClient.getFormattedWeatherByCity(text.replace(" ", "-")));
 //                break;
 //            }
+//            default: {
+//                textToReply =
+//            }
 //        }
-//
-//        return new SendMessage(chatId, textToReply);
-//    }
-//}
+        if (update.getMessage().hasText()) {
+            city = (text.replace(" ", "-"));
+        } else if (update.getMessage().hasLocation()) {
+            city = geocodingClient.getCityByCoordinates(
+                    update.getMessage().getLocation().getLatitude(),
+                    update.getMessage().getLocation().getLongitude());
+
+        }
+        textToReply = weatherServiceClient.getFormattedWeatherByCity(city);
+        return new SendMessage(chatId.toString(), textToReply);
+    }
+}
+
