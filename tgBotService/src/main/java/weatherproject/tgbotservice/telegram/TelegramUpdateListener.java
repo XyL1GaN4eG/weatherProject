@@ -10,12 +10,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
 
 
-@Component
+@Service
 @RequiredArgsConstructor
 @Slf4j
 public class TelegramUpdateListener {
@@ -23,7 +24,6 @@ public class TelegramUpdateListener {
     private final TelegramBot bot;
     private final BotHandler botHandler;
 
-    private int lastUpdateId = 0;
     @PostConstruct
     public void init() {
         bot.setUpdatesListener(updates -> {
