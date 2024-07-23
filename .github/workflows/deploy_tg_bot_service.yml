@@ -37,7 +37,7 @@ jobs:
           script: |
             sudo echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
-            sudo mvn -e -X -B package --file pom.xml
+            sudo mvn -B clean install
             sudo echo "Build completed."
             sudo   
 
