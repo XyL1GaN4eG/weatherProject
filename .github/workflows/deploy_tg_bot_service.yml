@@ -16,6 +16,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           source: ./tgBotService/
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
 
       - name: SSH into server and build tgBotService
