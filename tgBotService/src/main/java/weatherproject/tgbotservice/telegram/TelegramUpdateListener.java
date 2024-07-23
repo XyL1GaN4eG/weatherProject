@@ -12,9 +12,10 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.List;
 
-@Slf4j
+
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class TelegramUpdateListener {
 
     private final TelegramBot bot;
