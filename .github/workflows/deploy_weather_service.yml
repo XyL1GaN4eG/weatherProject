@@ -4,7 +4,7 @@ on:
   workflow_call:
 
 jobs:
-  deploy_tg_bot_service:
+  deploy_weather_api_service:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
