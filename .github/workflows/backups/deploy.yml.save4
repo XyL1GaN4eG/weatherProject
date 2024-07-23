@@ -1,0 +1,185 @@
+name: Deploy to Ubuntu Server
+
+on:
+  push:
+    branches:
+      - main  # Запускать workflow при push на ветку main
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest  # Использовать последний доступный образ Ubuntu
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Проверить репозиторий на машину сборки
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'  # Установить JDK 17 от Temurin
+          java-version: '17'
+
+      - name: Set environment variables
+        run: |
+          echo "DB_URL=${{ secrets.DB_URL }}" >> $GITHUB_ENV
+          echo "DB_USERNAME=${{ secrets.DB_USERNAME }}" >> $GITHUB_ENV
+          echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> $GITHUB_ENV  
+          echo "WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" >> $GITHUB_ENV  # Установить переменные окружения из секретов GitHub
+
+      - name: Debug environment variables
+        run: printenv  # Вывести все переменные окружения для отладки
+
+  deploy_weather_service:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Deploy source code weatherService to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'weatherApiService/src/'  # Исходные файлы, которые нужно отправить на сервер
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/src/weatherApiService/'  # Целевой путь на сервере
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: true  # Включить debug для отладки
+          strip_components: 0
+          overwrite: true
+          tar_dereference: false
+          tar_exec: tar
+
+      - name: SSH into server and build weatherApiService
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Building weatherApiService on server..."
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/src/
+            mvn -B package --file weatherApiService/pom.xml
+            echo "Build completed."
+
+      - name: Deploy weatherApiService to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '/home/xyl1gan4eg/myJavaProjects/weatherProject/src/weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar'
+          target: '/opt/weatherApiService/'
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: false
+          strip_components: 0
+          overwrite: true
+          tar_dereference: false
+          tar_exec: tar
+
+      - name: SSH into server and restart weatherApiService
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Restarting weatherApiService..."
+            sudo systemctl stop weather-api-service || true
+            sudo cp /opt/weatherApiService/weatherApiService-0.0.1-SNAPSHOT.jar /opt/weatherApiService/
+            sudo systemctl start weather-api-service
+
+  deploy_user_service:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Deploy userService to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: 'userService/'  # Копируем всю директорию userService
+          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/'  # Целевой путь на сервере
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: true  # Включить debug для отладки
+          strip_components: 0
+          overwrite: true
+          tar_dereference: false
+          tar_exec: tar
+
+
+
+      - name: SSH into server and build userService
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Building userService on server..."
+            cd /home/xyl1gan4eg/myJavaProjects/
+            mvn -B package --file userService/pom.xml
+            echo "Build completed."
+
+      - name: Deploy userService to Server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: '/home/xyl1gan4eg/myJavaProjects/weatherProject/src/userService/target/userService-0.0.1-SNAPSHOT.jar'
+          target: '/opt/userService/'
+          port: 22
+          timeout: 30s
+          command_timeout: 10m
+          use_insecure_cipher: false
+          rm: false
+          debug: false
+          strip_components: 0
+          overwrite: true
+          tar_dereference: false
+          tar_exec: tar
+
+      - name: SSH into server and restart userService
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Restarting userService..."
+            sudo systemctl stop user-service || true
+            sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+            sudo systemctl start user-service
+
+  cleanup:
+    runs-on: ubuntu-latest
+    needs: [deploy_weather_service, deploy_user_service]
+    steps:
+      - name: Clean up source code on server
+        uses: appleboy/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
+          script: |
+            echo "Cleaning up source code..."
+            rm -rf /home/xyl1gan4eg/myJavaProjects/weatherProject/src/  # Удалить исходный код с сервера
