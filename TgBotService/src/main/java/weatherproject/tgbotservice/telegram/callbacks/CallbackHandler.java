@@ -27,9 +27,11 @@ public class CallbackHandler {
         var location = update.message().location();
         var text = update.message().text();
         String city;
+
         //Если пользователь отправил геолокацию, то получаем название города
         city = location != null ? translateRuToEng(geocodingClient.getCityByCoordinates(location.latitude(), location.longitude())) : "null";
         String textToReply = "Просим прощения, город или команда не найдены.";
+
         if (currentUser.getState().equals(UserState.START.toString())) {
             if (!text.trim().isEmpty()) {
                 textToReply = weatherServiceClient.getFormattedWeatherByCity(text.replace(" ", "-"));
