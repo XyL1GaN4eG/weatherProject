@@ -29,21 +29,21 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          echo "Building tgBotService on server..."
-          cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
-          mvn -B package
-          echo "Build completed."
-          EOF
+          sudo ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
+          sudo echo "Building tgBotService on server..."
+          sudo cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
+          sudo mvn -B package
+          sudo echo "Build completed."
+          sudo EOF
 
       - name: SSH into server and restart tgBotService
         env:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
-          ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          echo "Restarting tgBotService..."
-          sudo systemctl stop tg-bot-service || true
-          sudo cp /opt/tgBotService/tgBotService-0.0.1-SNAPSHOT.jar /opt/userService/
-          sudo systemctl start tg-bot-service
-          EOF
+          sudo ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
+          sudo echo "Restarting tgBotService..."
+          sudo sudo systemctl stop tg-bot-service || true
+          sudo sudo cp /opt/tgBotService/tgBotService-0.0.1-SNAPSHOT.jar /opt/userService/
+          sudo sudo systemctl start tg-bot-service
+          sudo EOF
