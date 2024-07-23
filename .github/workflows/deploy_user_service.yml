@@ -7,24 +7,21 @@ jobs:
   deploy_user_service:
     runs-on: ubuntu-latest
     steps:
-      - name: Copy source code userService to Server
-        uses: appleboy/scp-action@v0.1.7
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '/userService/'
-          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/'
-          port: 22
-          timeout: 30s
-          command_timeout: 10m
-          use_insecure_cipher: false
-          rm: false
-          debug: true
-          strip_components: 0
-          overwrite: true
-          tar_dereference: false
-          tar_exec: tar
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Copy files via SCP
+        env:
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
+        run: |
+          scp -o StrictHostKeyChecking=no -r ./userService ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/
+
 
       - name: SSH into server and build userService
         uses: appleboy/ssh-action@master
