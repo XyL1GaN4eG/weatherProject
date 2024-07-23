@@ -38,7 +38,10 @@ public class BotHandler {
             case "/start":
                 if (currentUser.getState().equals("ALREADY_USER")) {
                     //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
-                    bot.execute(new SendMessage(chatId, ALREADY_USER.replace("{city}", currentUser.getCity())));
+                    bot.execute(new SendMessage(chatId, ALREADY_USER
+                            .replace("{city}", currentUser.getCity())
+                            .replace("{weather}", weatherServiceClient.getFormattedWeatherByCity(currentUser.getCity()))
+                    ));
                 } else {
                     //Если нет, то просто добавляем пользователя в бд и ставим нулл город
                     userServiceClient.createUser(new UserDTO(chatId, "null", UserState.START.toString()));
