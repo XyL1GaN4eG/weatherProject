@@ -1,11 +1,13 @@
 package weatherproject.tgbotservice.telegram;
 
 import com.pengrad.telegrambot.TelegramBot;
+import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.response.GetUpdatesResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -23,17 +25,14 @@ public class TelegramUpdateListener {
 
     private int lastUpdateId = 0;
     @PostConstruct
-    @Scheduled(fixedRate = 1000) // Проверяем обновления каждую секунду
-    public void getUpdates() {
-        log.info("Начали прослушивать данные из телеграмма");
-        GetUpdates getUpdates = new GetUpdates().offset(lastUpdateId + 1).limit(100).timeout(0);
-        log.info("Получаем апдейты из телеграма");
-        GetUpdatesResponse updatesResponse = bot.execute(getUpdates);
-        List<Update> updates = updatesResponse.updates();
-
-        for (Update update : updates) {
-            lastUpdateId = update.updateId();
-            botHandler.handleUpdate(update);
-        }
+    public void init() {
+        bot.setUpdatesListener(updates -> {
+            for (Update update : updates) {
+                if (update.message() != null) {
+                    botHandler.handleUpdate(update);
+                }
+            }
+            return UpdatesListener.CONFIRMED_UPDATES_ALL;
+        });
     }
 }
