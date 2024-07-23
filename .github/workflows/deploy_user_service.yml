@@ -28,7 +28,7 @@ jobs:
           SERVER_HOST: ${{ secrets.SERVER_HOST }}
           SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
+          ssh -vvv -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
           echo "Building userService on server..."
           cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
           mvn -B package
