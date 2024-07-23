@@ -10,9 +10,9 @@ jobs:
     uses: ./.github/workflows/deploy_user_service.yml
     secrets: inherit  # Наследовать секреты от основного workflow
 
-  deploy_weather_service:
-    uses: ./.github/workflows/deploy_weather_service.yml
-    secrets: inherit  # Наследовать секреты от основного workflow
+#  deploy_weather_service:
+#    uses: ./.github/workflows/deploy_weather_service.yml
+#    secrets: inherit  # Наследовать секреты от основного workflow
 
 #  cleanup:
 #    needs: [deploy_user_service, deploy_weather_service]
