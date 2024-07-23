@@ -30,7 +30,7 @@ public class UserServiceClient {
     }
 
     public UserDTO getUserById(Long id) {
-        String url = baseUrl + "/id=" + id;
+        String url = baseUrl + "/id?id=" + id;
         return restTemplate.getForObject(url, UserDTO.class);
     }
 

@@ -1,4 +1,4 @@
-name: Deploy User Service
+name: Deploy Telegram weather bot Service
 
 on:
   workflow_call:
