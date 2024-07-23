@@ -1,4 +1,4 @@
-package weatherproject.tgbotservice.config;
+package weatherproject.tgbotservice;
 
 import com.pengrad.telegrambot.TelegramBot;
 import org.springframework.beans.factory.annotation.Value;

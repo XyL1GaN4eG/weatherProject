@@ -1,4 +1,4 @@
-package weatherproject.tgbotservice.telegram;
+package weatherproject.tgbotservice;
 
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
