@@ -10,18 +10,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
+      - name: copy tgBotService source cod via ssh
+        uses: appleboy/scp-action@v0.1.7
         with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Copy files via SCP
-        env:
-          SERVER_HOST: ${{ secrets.SERVER_HOST }}
-          SERVER_USERNAME: ${{ secrets.SERVER_USERNAME }}
-        run: |
-          scp -o StrictHostKeyChecking=no -r ./tgBotService/ ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:/home/xyl1gan4eg/myJavaProjects/weatherProject/
-
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          source: ./tgBotService/
+          target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
 
       - name: SSH into server and build tgBotService
         env:
