@@ -26,12 +26,12 @@ public class UserController {
         return userService.getAllUsers();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/id")
     public UserEntity getUserById(@PathVariable Long id) {
         return userService.getUserByChatId(id);
     }
 
-    @GetMapping("/{city}")
+    @GetMapping("/city")
     public List<UserEntity> getUserByCity(@PathVariable String city) {
         return userService.getUserByCity(city);
     }
@@ -41,7 +41,7 @@ public class UserController {
         userService.createOrUpdateUser(userDTO);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/id")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }

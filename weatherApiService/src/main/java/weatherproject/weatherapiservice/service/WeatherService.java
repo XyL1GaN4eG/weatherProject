@@ -27,7 +27,7 @@ public class WeatherService {
 
     public Object[] processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
-        CityWeather cityWeather = weatherRepository.findByCity(city);
+        var cityWeather = weatherRepository.findLatestByCity(city);
         log.info("Полученные данные о погоде:", cityWeather);
         // Если город не найден
         if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1) {
