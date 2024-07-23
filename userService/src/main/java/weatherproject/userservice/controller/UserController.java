@@ -4,14 +4,15 @@ package weatherproject.userservice.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import weatherproject.userservice.entity.TGUser;
+import weatherproject.userservice.dto.UserDTO;
+import weatherproject.userservice.entity.UserEntity;
 import weatherproject.userservice.service.UserService;
 
 import java.util.List;
 
 
-@RestController //означает что класс будет обрабатывать хттп запросы и возвращать жсончики
-//реквест маппинг указывает базовый uri с которого будут начинаться все эндпоинты этого контроллера
+//Класс для работы с пользователями через рест апи
+@RestController
 @RequestMapping("/users")
 @RequiredArgsConstructor(onConstructor_ = {@Autowired})
 public class UserController {
@@ -21,23 +22,23 @@ public class UserController {
     //гетмаппинг обрабатывает хттп гет запросы на URI /users
     @GetMapping
     //метод возвращает всех пользователей
-    public List<TGUser> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/{id}")
-    public TGUser getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    public UserEntity getUserById(@PathVariable Long id) {
+        return userService.getUserByChatId(id);
+    }
+
+    @GetMapping("/{city}")
+    public List<UserEntity> getUserByCity(@PathVariable String city) {
+        return userService.getUserByCity(city);
     }
 
     @PostMapping
-    public TGUser createUser(@RequestBody TGUser TGUser) {
-        return userService.createUser(TGUser);
-    }
-
-    @PutMapping("/{id}")
-    public TGUser updateUser(@PathVariable Long id, @RequestBody TGUser TGUser) {
-        return userService.updateUser(id, TGUser);
+    public void createUser(@RequestBody UserDTO userDTO) {
+        userService.createOrUpdateUser(userDTO);
     }
 
     @DeleteMapping("/{id}")

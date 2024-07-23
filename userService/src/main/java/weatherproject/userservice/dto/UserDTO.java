@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDTO {
-    private Long id;
-    private String name;
+    private Long chatId;
     private String city;
+    private String state;
+    @Override
+    public String toString() {
+        return "[chatId=" + chatId + ", city=" + city + ", state=" + state + "]";
+    }
 }

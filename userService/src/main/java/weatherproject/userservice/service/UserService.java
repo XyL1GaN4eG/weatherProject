@@ -1,59 +1,59 @@
 package weatherproject.userservice.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import weatherproject.userservice.config.RabbitMQConfig;
-import weatherproject.userservice.entity.TGUser;
+import weatherproject.userservice.dto.UserDTO;
+import weatherproject.userservice.entity.UserEntity;
 import weatherproject.userservice.repository.UserRepository;
 
 import java.util.List;
 
-import static weatherproject.userservice.config.RabbitMQConfig.*;
-
 @Service
-@RequiredArgsConstructor(onConstructor_ = {@Autowired})
-//онконструктор добавляет ко всем полям аннотацию автовайред
+@RequiredArgsConstructor(onConstructor_ = {@Autowired})//онконструктор добавляет ко всем полям аннотацию автовайред
+@Slf4j
 public class UserService {
 
     private final UserRepository userRepository;
     private final RabbitTemplate rabbitTemplate;
 
-    public List<TGUser> getAllUsers() {
+    public List<UserEntity> getAllUsers() {
+        log.info("Получение всех пользователей");
         return userRepository.findAll();
     }
 
-    public TGUser getUserById(Long id) {
+    public UserEntity getUserByChatId(Long id) {
+        log.info("Получение пользователя по id");
         return userRepository.findById(id).orElse(null);
     }
 
-    public TGUser createUser(TGUser TGUser) {
-        var createdUser = userRepository.save(TGUser);
-        rabbitTemplate.convertAndSend(ROUTING_KEY_CREATED, createdUser);
-        return createdUser;
+    public List<UserEntity> getUserByCity(String city) {
+        log.info("Получение пользователя по городу");
+        return userRepository.findByCity(city);
     }
 
-    public TGUser updateUser(Long id, TGUser TGUserDetails) {
-        var user = userRepository.findById(id).orElse(null);
-        if (user != null) {
-            user.setName(user.getName());
-            user.setCity(TGUserDetails.getCity());
-            var updatedUser = userRepository.save(user);
-            sendMessage(ROUTING_KEY_UPDATED, updatedUser);
-            return updatedUser;
+    public void createOrUpdateUser(UserDTO tgUser) {
+        log.info("Создание или обновление пользователя: {}",
+                tgUser.toString());
+        if (((UserEntity) userRepository.findById(tgUser.getChatId()).orElse(new UserEntity())).getCity().equals("null")) {
+
         }
-        return null;
+        userRepository.save(userDtoToUserEntity(tgUser));
     }
 
     public void deleteUser(Long id) {
+        log.info("Удаление пользователя: {}", userRepository.findById(id));
         userRepository.deleteById(id);
-        sendMessage(RabbitMQConfig.ROUTING_KEY_DELETED, "TGUser deleted: " + id);
     }
 
-
-    private void sendMessage(String routingKey, Object message) {
-        rabbitTemplate.convertAndSend(RabbitMQConfig.EXCHANGE_NAME, routingKey, message);
+    private UserEntity userDtoToUserEntity(UserDTO tgUser) {
+        log.debug("UserDTO to UserEntity: {}", tgUser.toString());
+        return new UserEntity(
+                tgUser.getChatId(),
+                tgUser.getCity(),
+                tgUser.getState()
+        );
     }
-
 }

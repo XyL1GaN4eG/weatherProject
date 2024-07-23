@@ -1,6 +1,5 @@
 package weatherproject.userservice.config;
 
-
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.Queue;
@@ -10,51 +9,63 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+
 @Configuration
 public class RabbitMQConfig {
 
+    // Имя обменника
+    public static final String USER_EXCHANGE_NAME = "user-exchange";
 
-    //Имя обменника
-    public static final String EXCHANGE_NAME = "user-exchange";
-    //Имя очереди
-    public static final String QUEUE_NAME = "user-queue";
-    // Маршрутизирующие ключи для разных операций
-    public static final String ROUTING_KEY_CREATED = "user.created";
-    public static final String ROUTING_KEY_UPDATED = "user.updated";
-    public static final String ROUTING_KEY_DELETED = "user.deleted";
+    // Имена очередей
+    public static final String USER_GET_QUEUE_NAME = "user-get-queue";
+    public static final String USER_GET_RESPONSE_QUEUE_NAME = "user-get-response-queue";
+    public static final String USER_CREATED_QUEUE_NAME = "user-created-queue";
+    public static final String USER_DELETED_QUEUE_NAME = "user-deleted-queue";
 
+    // Маршрутизирующие ключи для запросов и ответов
+    public static final String ROUTING_KEY_USER_GET = "user.get";
+    public static final String ROUTING_KEY_USER_GET_RESPONSE = "user.get.response";
 
-    //Создает и возвращает новую очередь с именем "user-queue".
+    // Создание очередей
     @Bean
-    public Queue userQueue() {
-        return new Queue(QUEUE_NAME);
-    }
-
-    //Создает и возвращает новый обменник типа "topic" с именем "user-exchange".
-    // Обменник типа "topic" позволяет отправлять сообщения в различные очереди,
-    // основываясь на ключе маршрутизации (routing key).
-    @Bean
-    public TopicExchange exchange() {
-        return new TopicExchange(EXCHANGE_NAME);
-    }
-
-    //Привязка очереди к обменнику с маршрутизирующим ключом для создания пользователей
-    @Bean
-    public Binding bindingCreated(Queue userQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userQueue).to(exchange).with(ROUTING_KEY_CREATED);
+    public Queue userGetQueue() {
+        return new Queue(USER_GET_QUEUE_NAME);
     }
 
     @Bean
-    public Binding bindingUpdated(Queue userQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userQueue).to(exchange).with(ROUTING_KEY_UPDATED);
+    public Queue userGetResponseQueue() {
+        return new Queue(USER_GET_RESPONSE_QUEUE_NAME);
     }
 
     @Bean
-    public Binding bindingDeleted(Queue userQueue, TopicExchange exchange) {
-        return BindingBuilder.bind(userQueue).to(exchange).with(ROUTING_KEY_DELETED);
+    public Queue userCreatedQueue() {
+        return new Queue(USER_CREATED_QUEUE_NAME);
     }
 
-    //Настройка шаблона для отправки сообщений
+    @Bean
+    public Queue userDeletedQueue() {
+        return new Queue(USER_DELETED_QUEUE_NAME);
+    }
+
+    // Создание обменника
+    @Bean
+    public TopicExchange userExchange() {
+        return new TopicExchange(USER_EXCHANGE_NAME);
+    }
+
+    // Привязка очередей к обменнику с маршрутизацией
+    @Bean
+    public Binding bindingUserGet(Queue userGetQueue, TopicExchange userExchange) {
+        return BindingBuilder.bind(userGetQueue).to(userExchange).with(ROUTING_KEY_USER_GET);
+    }
+
+    @Bean
+    public Binding bindingUserGetResponse(Queue userGetResponseQueue, TopicExchange userExchange) {
+        return BindingBuilder.bind(userGetResponseQueue).to(userExchange).with(ROUTING_KEY_USER_GET_RESPONSE);
+    }
+
+
+    // Настройка шаблона для отправки сообщений
     @Bean
     public RabbitTemplate rabbitTemplate(final ConnectionFactory connectionFactory) {
         final RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory);
