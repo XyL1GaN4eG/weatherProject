@@ -24,12 +24,14 @@ public class BotHandler {
     private final CallbackHandler callbackHandler;
 
     public void handleUpdate(Update update) {
+        log.info("Начинаем обрабатывать запрос {}", update);
         var chatId = update.message().chat().id();
 
         var currentUser = userServiceClient.getUserById(chatId);
         UserState currentState = UserState.valueOf(currentUser.getState());
 
         var text = update.message().text();
+        log.info("Распрарсенные данные из update: {}", currentUser);
         //TODO: вынести свитч кейс в отдельный класс обработчик команды
         //Проверяем если введена слеш команда
         switch (text) {

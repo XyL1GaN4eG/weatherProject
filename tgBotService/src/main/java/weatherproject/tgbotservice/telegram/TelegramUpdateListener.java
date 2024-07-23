@@ -24,6 +24,7 @@ public class TelegramUpdateListener {
     @Scheduled(fixedRate = 1000) // Проверяем обновления каждую секунду
     public void getUpdates() {
         GetUpdates getUpdates = new GetUpdates().offset(lastUpdateId + 1).limit(100).timeout(0);
+        log.info("Получаем апдейты из телеграма");
         GetUpdatesResponse updatesResponse = bot.execute(getUpdates);
         List<Update> updates = updatesResponse.updates();
 
