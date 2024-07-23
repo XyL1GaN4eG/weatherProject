@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Cleanup
         uses: appleboy/ssh-action@master
@@ -17,7 +17,7 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
-            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
+            sudo rm -R /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/
 
       - name: copy tgBotService source cod via ssh
         uses: appleboy/scp-action@v0.1.7
@@ -36,7 +36,7 @@ jobs:
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo echo "Building tgBotService on server..."
-            sudo cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
             sudo mvn -B package
             sudo echo "Build completed."
             sudo   
