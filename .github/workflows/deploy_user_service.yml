@@ -24,46 +24,24 @@ jobs:
 
 
       - name: SSH into server and build userService
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            echo "Building userService on server..."
-            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
-            mvn -B package
-            echo "Build completed."
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
+          echo "Building userService on server..."
+          cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
+          mvn -B package
+          echo "Build completed."
+          EOF
 
-      - name: Deploy userService JAR to Server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar'
-          target: '/opt/userService/'
-          port: 22
-          timeout: 30s
-          command_timeout: 10m
-          use_insecure_cipher: false
-          rm: false
-          debug: true
-          strip_components: 0
-          overwrite: true
-          tar_dereference: false
-          tar_exec: tar
+      - name: Deploy userService JAR to Server services
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
+          mv /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar /opt/userService/
 
       - name: SSH into server and restart userService
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 'bash -s' << 'EOF'
+          echo "Restarting userService..."
+                      sudo systemctl stop user-service || true
+                      sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
+                      sudo systemctl start user-service
         uses: appleboy/ssh-action@v0.1.6
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            echo "Restarting userService..."
-            sudo systemctl stop user-service || true
-            sudo cp /opt/userService/userService-0.0.1-SNAPSHOT.jar /opt/userService/
-            sudo systemctl start user-service
