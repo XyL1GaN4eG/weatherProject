@@ -14,6 +14,10 @@ jobs:
     uses: ./.github/workflows/deploy_weather_service.yml
     secrets: inherit  # Наследовать секреты от основного workflow
 
+  deploy_tg_bot_service:
+    uses: ./.github/workflows/deploy_tg_bot_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
+
 #  cleanup:
 #    needs: [deploy_user_service, deploy_weather_service]
 #    uses: ./.github/workflows/cleanup.yml

@@ -31,20 +31,20 @@ jobs:
 
 
       #TODO: create systemd tg-bot-service config on server
-#      - name: Build TgBotService
-#        run: mvn -B package --file TgBotService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
+#      - name: Build tgBotService
+#        run: mvn -B package --file tgBotService/pom.xml  # Собрать проект Maven, указав путь к pom.xml
 #
-#      - name: List built files for TgBotService
-#        run: ls -la TgBotService/target  # Показать список файлов в целевой папке после сборки
+#      - name: List built files for tgBotService
+#        run: ls -la tgBotService/target  # Показать список файлов в целевой папке после сборки
 #
-#      - name: Deploy TgBotService to Server
+#      - name: Deploy tgBotService to Server
 #        uses: appleboy/scp-action@master
 #        with:
 #          host: ${{ secrets.SERVER_HOST }}
 #          username: ${{ secrets.SERVER_USERNAME }}
 #          key: ${{ secrets.SSH_PRIVATE_KEY }}
-#          source: 'TgBotService/target/TgBotService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
-#          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/TgBotService'  # Указать целевой путь на сервере
+#          source: 'tgBotService/target/tgBotService-0.0.1-SNAPSHOT.jar'  # Указать путь к скомпилированному JAR файлу
+#          target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService'  # Указать целевой путь на сервере
 #          port: 22
 #          timeout: 30s
 #          command_timeout: 10m
@@ -59,16 +59,16 @@ jobs:
 #          proxy_timeout: 30s
 #          proxy_use_insecure_cipher: false  # Настройки для scp-action, чтобы копировать файл на удаленный сервер
 #
-#      - name: SSH into server and restart TgBotService
+#      - name: SSH into server and restart tgBotService
 #        uses: appleboy/ssh-action@master
 #        with:
 #          host: ${{ secrets.SERVER_HOST }}
 #          username: ${{ secrets.SERVER_USERNAME }}
 #          key: ${{ secrets.SSH_PRIVATE_KEY }}
 #          script: |
-#            echo "Restarting TgBotService..."
+#            echo "Restarting tgBotService..."
 #            sudo systemctl stop tg-bot-service || true
-#            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/TgBotService/TgBotService-0.0.1-SNAPSHOT.jar /opt/TgBotService/
+#            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/tgBotService-0.0.1-SNAPSHOT.jar /opt/tgBotService/
 #            sudo systemctl start tg-bot-service
 
 
