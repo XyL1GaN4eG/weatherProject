@@ -12,9 +12,6 @@ public class BotConfig {
 //    private static String botToken;
     @Bean
     public TelegramBot telegramBot() {
-        return new TelegramBot(
-//                botToken
-                "7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8"
-        );
+        return new TelegramBot("7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8");
     }
 }
