@@ -13,7 +13,7 @@ jobs:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: 'userService'
+          source: '/userService/'
           target: '/home/xyl1gan4eg/myJavaProjects/weatherProject/userService/'
           port: 22
           timeout: 30s
