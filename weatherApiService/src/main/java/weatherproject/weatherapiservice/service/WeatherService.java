@@ -12,6 +12,7 @@ import weatherproject.weatherapiservice.repository.WeatherRepository;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
 @Component
@@ -45,11 +46,13 @@ public class WeatherService {
                 try {
                     log.info("Попытка распарсить данные");
                     cityWeather = new WeatherEntity((String) weatherData[0], (Double) weatherData[1], (String) weatherData[2]);
-                    weatherRepository.save(cityWeather);
+                    try {
+                        weatherRepository.save(cityWeather);
+                    } catch (Exception e) {
+                        log.error("Произошла ошибка при сохранении данных в таблицу: {}", e.getMessage());
+                    }
                     log.info("Данные о погоде в городе {} сохранены в базу данных", city);
                     return new WeatherDTO(cityWeather);
-                } catch (HibernateError e) {
-                    log.error("Произошла ошибка при сохранении данных в таблицу: {}", e.getMessage());
                 } catch (ClassCastException e) {
                     log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
                 }
