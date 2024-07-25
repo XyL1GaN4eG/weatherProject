@@ -29,7 +29,8 @@ public class CallbackHandler {
         String textToReply = "Просим прощения, город или погода в нем не найдены.";
 
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
-
+        //TODO: вынести обработку сообщения и присваивания названия города в отдельный метод
+        //TODO: вынести коллбэки в отдельные классы
         switch (currentState) {
             case START: {
                 if (update.getMessage().hasText()) {
@@ -48,7 +49,7 @@ public class CallbackHandler {
             }
             case HAVE_SETTED_CITY: {
                 if (update.getMessage().hasText()) {
-                    city = (update.getMessage().getText().replace(" ", "-"));
+                    city = translateClient.translateRuToEng(update.getMessage().getText().replace(" ", "-"));
                 } else if (update.getMessage().hasLocation()) {
                     city = geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
