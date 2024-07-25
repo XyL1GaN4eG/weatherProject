@@ -49,7 +49,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         log.info("Получено новое обновление: {}, {}", update.getMessage().getChatId(), update.getMessage().getText());
         var currentUser = userServiceClient.getUserById(update.getMessage().getChatId());
 
-        sendMessage(new SendMessage(update.getMessage().getChatId().toString(), currentUser.toString()));
+        sendMessage(new SendMessage(update.getMessage().getChatId().toString(), update.getMessage().getText()));
 
         if (update.hasMessage() && update.getMessage().hasText()) {
             String chatId = update.getMessage().getChatId().toString();
