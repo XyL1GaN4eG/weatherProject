@@ -9,8 +9,6 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import java.util.List;
-
 @Service
 public class UserServiceClient {
 
@@ -40,7 +38,7 @@ public class UserServiceClient {
         return List.of(response.getBody());
     }
 
-    public void createUser(UserDTO userDTO) {
+    public void createOrUpdateUser(UserDTO userDTO) {
         restTemplate.postForObject(baseUrl, userDTO, Void.class);
     }
 

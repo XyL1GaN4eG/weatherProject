@@ -9,6 +9,9 @@ import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.telegram.UserState;
+import weatherproject.tgbotservice.utils.Constants;
+
+import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
 
 @RequiredArgsConstructor
 @Component
@@ -25,7 +28,7 @@ public class CallbackHandler {
 
         //Если пользователь отправил геолокацию, то получаем название города
 //        city = location != null ? translateRuToEng(geocodingClient.getCityByCoordinates(location.getLatitude(), location.getLatitude())) : "null";
-        String textToReply = "Просим прощения, город не найден.";
+        String textToReply = "Просим прощения, город или погода в нем не найдены.";
 
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
 //        switch (currentState) {
@@ -63,14 +66,31 @@ public class CallbackHandler {
                             update.getMessage().getLocation().getLatitude(),
                             update.getMessage().getLocation().getLongitude());
                 }
+                var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
+                if (weatherCity != null) {
+                    userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
+                    textToReply = weatherCity;
+                }
+                return new SendMessage(chatId.toString(), textToReply);
             }
             case HAVE_SETTED_CITY: {
-
+                if (update.getMessage().hasText()) {
+                    city = (update.getMessage().getText().replace(" ", "-"));
+                } else if (update.getMessage().hasLocation()) {
+                    city = geocodingClient.getCityByCoordinates(
+                            update.getMessage().getLocation().getLatitude(),
+                            update.getMessage().getLocation().getLongitude());
+                    var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
+                    if (weatherCity != null) {
+                        userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
+                        textToReply = weatherCity;
+                        return new SendMessage(chatId.toString(), textToReply);
+                    } else {
+                        return new SendMessage(chatId.toString(), Constants.ALREADY_USER);
+                    }
+                }
             }
         }
-
-        userServiceClient.createUser();
-        textToReply = weatherServiceClient.getFormattedWeatherByCity(city);
         return new SendMessage(chatId.toString(), textToReply);
     }
 }

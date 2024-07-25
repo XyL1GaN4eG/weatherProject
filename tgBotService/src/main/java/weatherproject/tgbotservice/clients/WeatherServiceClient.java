@@ -45,6 +45,6 @@ public class WeatherServiceClient {
                     GoogleTranslateClient.translateEngToRussian(unformattedWeather[1].toString()),
                     GoogleTranslateClient.translateEngToRussian(unformattedWeather[2].toString()));
         }
-        return String.format("Погода в городе %s не найдена", city);
+        return null;
     }
 }

@@ -1,8 +1,6 @@
 package weatherproject.tgbotservice.telegram.commands;
 
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -29,7 +27,7 @@ public class StartCommand implements Command {
             ));
         } else {
             //Если нет, то просто добавляем пользователя в бд и ставим нулл город
-            userServiceClient.createUser(new UserDTO(chatId, "null", UserState.START.toString()));
+            userServiceClient.createOrUpdateUser(new UserDTO(chatId, "null", UserState.START.toString()));
         }
         return new SendMessage(chatId.toString(), Constants.START_MESSAGE);
     }

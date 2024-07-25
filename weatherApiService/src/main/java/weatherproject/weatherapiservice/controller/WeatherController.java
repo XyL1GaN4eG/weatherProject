@@ -28,11 +28,7 @@ public class WeatherController {
 
     @GetMapping("/city/{city}")
     public Object[] getWeatherByCity(@PathVariable String city) {
-        var cityWeather = weatherService.processWeatherRequest(city);
-        if (cityWeather != null) {
-            return cityWeather;
-        }
-        return new String[0];
+        return weatherService.processWeatherRequest(city);
     }
 
 }
