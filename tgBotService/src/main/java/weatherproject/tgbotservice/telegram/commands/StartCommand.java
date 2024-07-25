@@ -15,9 +15,9 @@ import static weatherproject.tgbotservice.utils.Constants.*;
 @RequiredArgsConstructor
 @Component
 public class StartCommand implements Command {
-    public final UserServiceClient userServiceClient;
-    public final WeatherServiceClient weatherServiceClient;
-    public GoogleTranslateClient translateClient;
+    private final UserServiceClient userServiceClient;
+    private final WeatherServiceClient weatherServiceClient;
+    private final GoogleTranslateClient translateClient;
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {
         var chatId = update.getMessage().getChatId();
