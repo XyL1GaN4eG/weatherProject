@@ -30,6 +30,8 @@ public class WeatherServiceClient {
      * @param city Название города
      * @return Массив объектов погоды
      */
+
+    //TODO: сделать weatherdto чтобы можно было удобно доставать данные
     public Object[] getWeatherByCity(String city) {
         String url = baseUrl + "/city/" + city;
         return restTemplate.getForObject(url, Object[].class);

@@ -20,12 +20,8 @@ import weatherproject.tgbotservice.telegram.commands.CommandHandler;
 public class TelegramBot extends TelegramLongPollingBot {
 
     public final BotConfig botConfig;
-
     public final CommandHandler commandsHandler;
-
     public final CallbackHandler callbacksHandler;
-
-
     public final UserServiceClient userServiceClient;
 
     @Override
@@ -40,7 +36,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("Получено новое обновление: {}", update.getMessage().getChatId());
+        log.info("Получено новое сообщение: {}", update.getMessage().getChatId());
         var currentUser = userServiceClient.getUserById(update.getMessage().getChatId());
         if (update.hasMessage()) {
             if (update.getMessage().hasText() && update.getMessage().getText().startsWith("/")) {

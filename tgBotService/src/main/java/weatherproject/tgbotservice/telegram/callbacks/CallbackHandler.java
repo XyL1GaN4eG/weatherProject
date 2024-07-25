@@ -13,6 +13,7 @@ import weatherproject.tgbotservice.telegram.UserState;
 import weatherproject.tgbotservice.utils.Constants;
 
 import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
+import static weatherproject.tgbotservice.utils.Constants.*;
 
 @RequiredArgsConstructor
 @Component
@@ -35,22 +36,27 @@ public class CallbackHandler {
         switch (currentState) {
             case START: {
                 if (update.getMessage().hasText()) {
-                    city = translateClient.translateRuToEng(update.getMessage().getText().replace(" ", "-"));
+                    city = translateClient.translateRuToEng(
+                            update.getMessage().getText())
+                            .replace(" ", "-");
                 } else if (update.getMessage().hasLocation()) {
                     city = geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
                             update.getMessage().getLocation().getLongitude());
                 }
-                var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
+                var weatherCity = weatherServiceClient.getWeatherByCity(city);
                 if (weatherCity != null) {
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
-                    textToReply = weatherCity;
+                    textToReply = JUST_SET_CITY
+                            .replace("{city}", weatherCity[0].toString())
+                            .replace("{temperature}", weatherCity[1].toString())
+                            .replace("{condition}", weatherCity[2].toString());
                 }
                 return new SendMessage(chatId.toString(), textToReply);
             }
             case HAVE_SETTED_CITY: {
                 if (update.getMessage().hasText()) {
-                    city = translateClient.translateRuToEng(update.getMessage().getText().replace(" ", "-"));
+                    city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
                 } else if (update.getMessage().hasLocation()) {
                     city = geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
