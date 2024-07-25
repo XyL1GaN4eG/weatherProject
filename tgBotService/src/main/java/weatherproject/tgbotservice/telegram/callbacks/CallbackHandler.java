@@ -88,7 +88,11 @@ public class CallbackHandler {
                     textToReply = weatherCity;
                     return new SendMessage(chatId.toString(), textToReply);
                 } else {
-                    return new SendMessage(chatId.toString(), Constants.ALREADY_USER);
+                    return new SendMessage(chatId.toString(), Constants.ALREADY_USER.replace(
+                            "{city}", currentUser.getCity()
+                    ).replace(
+                            "{weather}", weatherServiceClient.getFormattedWeatherByCity(currentUser.getCity())
+                    ));
                 }
             }
         }
