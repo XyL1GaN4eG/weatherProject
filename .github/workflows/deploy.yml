@@ -20,14 +20,23 @@ jobs:
       - name: Check if user service has changed
         id: check_changes
         run: |
+          # Fetch the latest commits from origin
           git fetch origin main
-          if git diff --name-only HEAD^ HEAD | grep 'userService'; then
+
+          # Check out the branch you are working on
+          git checkout main
+          echo "should_deploy=false" >> $GITHUB_ENV
+
+          # Compare the changes between the current commit and the latest commit in the main branch
+          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'userService/'; then
             echo "User service has changed"
             echo "should_deploy=true" >> $GITHUB_ENV
           else
             echo "User service has not changed"
             echo "should_deploy=false" >> $GITHUB_ENV
           fi
+        shell: /usr/bin/bash -e {0}
+
 
       - name: Deploy user service
         if: env.should_deploy == 'true'
@@ -40,17 +49,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check if weather service has changed
+      - name: Check if user service has changed
         id: check_changes
         run: |
+          # Fetch the latest commits from origin
           git fetch origin main
-          if git diff --name-only HEAD^ HEAD | grep 'weatherApiService'; then
+          echo "should_deploy=false" >> $GITHUB_ENV
+
+          # Check out the branch you are working on
+          git checkout main
+
+          # Compare the changes between the current commit and the latest commit in the main branch
+          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'weatherApiService/'; then
             echo "Weather service has changed"
             echo "should_deploy=true" >> $GITHUB_ENV
           else
             echo "Weather service has not changed"
             echo "should_deploy=false" >> $GITHUB_ENV
           fi
+        shell: /usr/bin/bash -e {0}
 
       - name: Deploy weather service
         if: env.should_deploy == 'true'
@@ -63,17 +80,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Check if tg bot service has changed
+      - name: Check if user service has changed
         id: check_changes
         run: |
+          # Fetch the latest commits from origin
           git fetch origin main
-          if git diff --name-only HEAD^ HEAD | grep 'tgBotService'; then
-            echo "TG Bot service has changed"
+          echo "should_deploy=false" >> $GITHUB_ENV
+
+          # Check out the branch you are working on
+          git checkout main
+
+          # Compare the changes between the current commit and the latest commit in the main branch
+          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'tgBotService/'; then
+            echo "tgBot service has changed"
             echo "should_deploy=true" >> $GITHUB_ENV
           else
-            echo "TG Bot service has not changed"
+            echo "tgBot service has not changed"
             echo "should_deploy=false" >> $GITHUB_ENV
           fi
+        shell: /usr/bin/bash -e {0}
 
       - name: Deploy tg bot service
         if: env.should_deploy == 'true'
