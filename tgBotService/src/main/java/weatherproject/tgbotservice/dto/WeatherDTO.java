@@ -5,11 +5,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class WeatherDTO {
+public class WeatherDTO implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 2L;
     private String city;
     private Double temperature;
     private String condition;

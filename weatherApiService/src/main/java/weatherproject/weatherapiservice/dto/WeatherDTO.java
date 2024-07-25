@@ -5,13 +5,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import weatherproject.weatherapiservice.entity.WeatherEntity;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class WeatherDTO implements Serializable {
-    private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 2L;
     private String city;
     private Double temperature;
     private String condition;
