@@ -9,7 +9,7 @@ import org.springframework.web.client.RestTemplate;
 public class WeatherServiceClient {
 
     private final RestTemplate restTemplate;
-
+    private final GoogleTranslateClient translateClient;
     // URL для обращения к Weather API Service
     private final String baseUrl = "http://localhost:8081/weather";
 
@@ -41,9 +41,9 @@ public class WeatherServiceClient {
         //TODO: вынести в константы "текущая погода" и "погода не найдена"
         if (unformattedWeather != null) {
             return String.format("Текущая погода в городе %s: %s, %s",
-                    GoogleTranslateClient.translateEngToRussian(city),
-                    GoogleTranslateClient.translateEngToRussian(unformattedWeather[1].toString()),
-                    GoogleTranslateClient.translateEngToRussian(unformattedWeather[2].toString()));
+                    translateClient.translateEngToRussian(city),
+                    translateClient.translateEngToRussian(unformattedWeather[1].toString()),
+                    translateClient.translateEngToRussian(unformattedWeather[2].toString()));
         }
         return null;
     }

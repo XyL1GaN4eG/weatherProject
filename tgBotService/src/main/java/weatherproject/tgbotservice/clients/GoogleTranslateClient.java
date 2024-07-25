@@ -2,6 +2,7 @@ package weatherproject.tgbotservice.clients;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.net.URLEncoder;
 
 @Slf4j
 @NoArgsConstructor
+@Service
 public class GoogleTranslateClient {
     private boolean isRussian(String text) {
         return text.matches("[а-яА-ЯёЁ\\s]+");
@@ -21,15 +23,16 @@ public class GoogleTranslateClient {
         return text.matches("[a-aA-Z\\s]+");
     }
 
-    public static String translateEngToRussian(String text) {
+    public String translateEngToRussian(String text) {
         return translateFromTo("en", "ru", text);
     }
 
-    public static String translateRuToEng(String text) {
+    public String translateRuToEng(String text) {
+        if (isEnglish(text)) return text;
         return translateFromTo("ru", "en", text);
     }
 
-    private static String translateFromTo(String langFrom, String langTo, String text) {
+    private String translateFromTo(String langFrom, String langTo, String text) {
         try {
             String urlStr = "https://script.google.com/macros/s/AKfycbzO8nojwkOWKi3DjljSEf8byUYIwzNHIIhSRcPn4lGkE_1-m_LuqwU1s5SLJ0TRiarj/exec" +
                     "?q=" + URLEncoder.encode(text, "UTF-8") +
