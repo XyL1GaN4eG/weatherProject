@@ -32,7 +32,6 @@ jobs:
       - name: Deploy user service
         if: env.should_deploy == 'true'
         uses: ./.github/workflows/deploy_user_service.yml
-        secrets: inherit  # Наследовать секреты от основного workflow
 
   deploy_weather_service:
     needs: cleanup
@@ -56,7 +55,6 @@ jobs:
       - name: Deploy weather service
         if: env.should_deploy == 'true'
         uses: ./.github/workflows/deploy_weather_service.yml
-        secrets: inherit  # Наследовать секреты от основного workflow
 
   deploy_tg_bot_service:
     needs: cleanup
@@ -80,4 +78,3 @@ jobs:
       - name: Deploy tg bot service
         if: env.should_deploy == 'true'
         uses: ./.github/workflows/deploy_tg_bot_service.yml
-        secrets: inherit  # Наследовать секреты от основного workflow
