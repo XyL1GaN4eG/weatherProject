@@ -28,23 +28,26 @@ public class CallbackHandler {
 
 
     public SendMessage handleCallback(UserDTO currentUser, Update update) {
-        var chatId = update.getMessage().getChatId();
+        var message = update.getMessage();
+        var chatId = message.getChatId();
         String city = "Извините, произошла ошибка";
         String textToReply = "Просим прощения, город или погода в нем не найдены.";
 
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
-        log.info("Обрабатываем {} от пользователя ", update.getMessage(), currentUser);
+        log.info("Обрабатываем {} от пользователя ", message, currentUser);
         //TODO: вынести обработку сообщения и присваивания названия города в отдельный метод
         //TODO: вынести коллбэки в отдельные классы
         //TODO: делать проверку в сообщении на то, город ли это вообще
+        //TODO: удалить дубликаты
         switch (currentState) {
             case START: {
-                if (update.getMessage().hasText()) {
-                    city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
-                } else if (update.getMessage().hasLocation()) {
-                    city = translateClient.translateRuToEng(geocodingClient.getCityByCoordinates(
-                            update.getMessage().getLocation().getLatitude(),
-                            update.getMessage().getLocation().getLongitude()));
+                if (message.hasText()) {
+                    city = translateClient.translateRuToEng(message.getText()).replace(" ", "-");
+                } else if (message.hasLocation()) {
+                    city = translateClient.translateRuToEng(
+                            geocodingClient.getCityByCoordinates(
+                            message.getLocation().getLatitude(),
+                            message.getLocation().getLongitude()));
                 }
                 log.info("Пытаемся получить погоду в городе {}", city);
                 var weatherCity = weatherServiceClient.getWeatherByCity(city);
@@ -63,12 +66,12 @@ public class CallbackHandler {
             //Если город уже выставлен
             case HAVE_SETTED_CITY: {
                 //то обращаемся к апи и возвращаем название города на английском языке
-                if (update.getMessage().hasText()) {
-                    city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
-                } else if (update.getMessage().hasLocation()) {
-                    city = geocodingClient.getCityByCoordinates(
-                            update.getMessage().getLocation().getLatitude(),
-                            update.getMessage().getLocation().getLongitude());
+                if (message.hasText()) {
+                    city = translateClient.translateRuToEng(message.getText()).replace(" ", "-");
+                } else if (message.hasLocation()) {
+                    city = translateClient.translateRuToEng(geocodingClient.getCityByCoordinates(
+                            message.getLocation().getLatitude(),
+                            message.getLocation().getLongitude()));
                 }
                 log.info("Пытаемся получить погоду в городе {}", city);
                 //получаем погоду из апи микросервиса
