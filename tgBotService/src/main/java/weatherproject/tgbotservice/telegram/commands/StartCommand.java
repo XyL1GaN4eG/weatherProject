@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import weatherproject.tgbotservice.clients.GoogleTranslateClient;
 import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
@@ -16,6 +17,7 @@ import static weatherproject.tgbotservice.utils.Constants.*;
 public class StartCommand implements Command {
     public final UserServiceClient userServiceClient;
     public final WeatherServiceClient weatherServiceClient;
+    public GoogleTranslateClient translateClient;
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {
         var chatId = update.getMessage().getChatId();
@@ -24,8 +26,9 @@ public class StartCommand implements Command {
             var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
             //TODO: добавить перевод города и состояния температуры
             return (new SendMessage(chatId.toString(), ALREADY_SET_CITY
-                    .replace("{city}", currentUser.getCity())
-                    .replace("{weather}", weather.getTemperature() + " " + weather.getCondition())
+                    .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
+                    .replace("{temperature}", weather.getTemperature().toString())
+                    .replace("{condition}", translateClient.translateEngToRussian(weather.getCondition()))
             ));
         } else {
             //Если нет, то просто добавляем пользователя в бд и ставим нулл город
