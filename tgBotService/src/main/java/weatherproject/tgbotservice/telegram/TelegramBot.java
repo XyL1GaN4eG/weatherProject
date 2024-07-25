@@ -3,7 +3,6 @@ package weatherproject.tgbotservice.telegram;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-//import weatherproject.tgbotservice.config.BotProperties;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -12,11 +11,6 @@ import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.config.BotConfig;
 import weatherproject.tgbotservice.telegram.callbacks.CallbackHandler;
 import weatherproject.tgbotservice.telegram.commands.CommandHandler;
-import weatherproject.tgbotservice.utils.Constants;
-
-import javax.annotation.PostConstruct;
-
-import static weatherproject.tgbotservice.utils.Constants.CANT_UNDERSTAND;
 
 //import static weatherproject.tgbotservice.utils.Constants.CANT_UNDERSTAND;
 
@@ -46,23 +40,16 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public void onUpdateReceived(Update update) {
-        log.info("Получено новое обновление: {}, {}", update.getMessage().getChatId(), update.getMessage().getText());
+        log.info("Получено новое обновление: {}", update.getMessage().getChatId());
         var currentUser = userServiceClient.getUserById(update.getMessage().getChatId());
-
-        sendMessage(new SendMessage(update.getMessage().getChatId().toString(), update.getMessage().getText()));
-
-        if (update.hasMessage() && update.getMessage().hasText()) {
-            String chatId = update.getMessage().getChatId().toString();
-            if (update.getMessage().getText().startsWith("/")) {
+        if (update.hasMessage()) {
+            if (update.getMessage().hasText() && update.getMessage().getText().startsWith("/")) {
                 sendMessage(commandsHandler.handleCommand(currentUser, update));
             } else {
-                sendMessage(new SendMessage(chatId, Constants.CANT_UNDERSTAND));
+                sendMessage(callbacksHandler.handleCallback(currentUser, update));
             }
-        } else if (update.hasCallbackQuery()) {
-            sendMessage(callbacksHandler.handleCallback(currentUser, update));
         }
     }
-
 
 
 //    private void onUpdateReceived(Update update) {
