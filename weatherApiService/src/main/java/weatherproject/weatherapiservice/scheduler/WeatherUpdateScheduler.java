@@ -3,9 +3,10 @@ package weatherproject.weatherapiservice.scheduler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import weatherproject.weatherapiservice.service.WeatherService;
 
-@Component
+@Service
 @Slf4j
 public class WeatherUpdateScheduler {
     private final WeatherService weatherService;
@@ -15,7 +16,7 @@ public class WeatherUpdateScheduler {
     }
 
     //Каждый час сохраняет погоду в БД, чтобы если вдруг сработал триггер
-    @Scheduled(cron = "45 * * * *")
+    @Scheduled(cron = "50 * * * *")
     public void updateWeather() {
         log.info("Ежечасное обновление погоды началось...");
         weatherService.updateAllCitiesWeather();

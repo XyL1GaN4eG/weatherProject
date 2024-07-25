@@ -69,7 +69,6 @@ public class WeatherService {
     public void updateAllCitiesWeather() {
         var cities = weatherRepository.findAll();
         for (WeatherEntity weatherEntity : cities) {
-
             processWeatherRequest(weatherEntity.getCity());
         }
     }
