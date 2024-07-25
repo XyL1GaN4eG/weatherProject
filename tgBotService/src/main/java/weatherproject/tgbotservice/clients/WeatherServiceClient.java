@@ -1,7 +1,6 @@
 package weatherproject.tgbotservice.clients;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,7 +40,8 @@ public class WeatherServiceClient {
 
         //TODO: вынести в константы "текущая погода" и "погода не найдена"
         if (unformattedWeather != null) {
-            return String.format("Текущая погода в городе %s: %s, %s", city,
+            return String.format("Текущая погода в городе %s: %s, %s",
+                    GoogleTranslateClient.translateEngToRussian(city),
                     GoogleTranslateClient.translateEngToRussian(unformattedWeather[1].toString()),
                     GoogleTranslateClient.translateEngToRussian(unformattedWeather[2].toString()));
         }
