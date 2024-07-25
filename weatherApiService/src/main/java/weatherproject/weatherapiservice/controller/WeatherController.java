@@ -26,7 +26,7 @@ public class WeatherController {
         return weatherService.getAllCitiesWeather();
     }
 
-    @GetMapping("/city")
+    @GetMapping("/city/{city}")
     public Object[] getWeatherByCity(@RequestParam String city) {
         return weatherService.processWeatherRequest(city);
     }
