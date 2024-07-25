@@ -1,6 +1,7 @@
 package weatherproject.weatherapiservice.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.HibernateError;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -47,15 +48,15 @@ public class WeatherService {
                     weatherRepository.save(cityWeather);
                     log.info("Данные о погоде в городе {} сохранены в базу данных", city);
                     return new WeatherDTO(cityWeather);
+                } catch (HibernateError e) {
+                    log.error("Произошла ошибка при сохранении данных в таблицу: {}", e.getMessage());
                 } catch (ClassCastException e) {
                     log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
                 }
-            } else {
-                log.info("Город {} не найден, возвращаем null", city);
-                return null;
+
             }
         }
-
+        log.info("Город {} не найден, возвращаем null", city);
         return null;
     }
 
