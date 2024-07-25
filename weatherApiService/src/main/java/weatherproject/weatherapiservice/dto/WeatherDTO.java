@@ -23,5 +23,4 @@ public class WeatherDTO implements Serializable {
         this.temperature = weatherEntity.getTemperature();
         this.condition = weatherEntity.getCondition();
     }
-    //комментарий для проверки скрипта гитхаб экшнс
 }

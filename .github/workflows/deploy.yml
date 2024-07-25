@@ -12,94 +12,15 @@ jobs:
 
   deploy_user_service:
     needs: cleanup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check if user service has changed
-        id: check_changes
-        run: |
-          # Fetch the latest commits from origin
-          git fetch origin main
-
-          # Check out the branch you are working on
-          git checkout main
-          echo "should_deploy=false" >> $GITHUB_ENV
-
-          # Compare the changes between the current commit and the latest commit in the main branch
-          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'userService/'; then
-            echo "User service has changed"
-            echo "should_deploy=true" >> $GITHUB_ENV
-          else
-            echo "User service has not changed"
-            echo "should_deploy=false" >> $GITHUB_ENV
-          fi
-        shell: /usr/bin/bash -e {0}
-
-
-      - name: Deploy user service
-        if: env.should_deploy == 'true'
-        uses: ./.github/workflows/deploy_user_service.yml
+    uses: ./.github/workflows/deploy_user_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
 
   deploy_weather_service:
     needs: cleanup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check if user service has changed
-        id: check_changes
-        run: |
-          # Fetch the latest commits from origin
-          git fetch origin main
-          echo "should_deploy=false" >> $GITHUB_ENV
-
-          # Check out the branch you are working on
-          git checkout main
-
-          # Compare the changes between the current commit and the latest commit in the main branch
-          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'weatherApiService/'; then
-            echo "Weather service has changed"
-            echo "should_deploy=true" >> $GITHUB_ENV
-          else
-            echo "Weather service has not changed"
-            echo "should_deploy=false" >> $GITHUB_ENV
-          fi
-        shell: /usr/bin/bash -e {0}
-
-      - name: Deploy weather service
-        if: env.should_deploy == 'true'
-        uses: ./.github/workflows/deploy_weather_service.yml
+    uses: ./.github/workflows/deploy_weather_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
 
   deploy_tg_bot_service:
     needs: cleanup
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Check if user service has changed
-        id: check_changes
-        run: |
-          # Fetch the latest commits from origin
-          git fetch origin main
-          echo "should_deploy=false" >> $GITHUB_ENV
-
-          # Check out the branch you are working on
-          git checkout main
-
-          # Compare the changes between the current commit and the latest commit in the main branch
-          if git diff --name-only HEAD $(git merge-base HEAD origin/main) | grep 'tgBotService/'; then
-            echo "tgBot service has changed"
-            echo "should_deploy=true" >> $GITHUB_ENV
-          else
-            echo "tgBot service has not changed"
-            echo "should_deploy=false" >> $GITHUB_ENV
-          fi
-        shell: /usr/bin/bash -e {0}
-
-      - name: Deploy tg bot service
-        if: env.should_deploy == 'true'
-        uses: ./.github/workflows/deploy_tg_bot_service.yml
+    uses: ./.github/workflows/deploy_tg_bot_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
