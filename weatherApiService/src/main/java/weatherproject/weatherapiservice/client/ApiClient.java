@@ -44,6 +44,7 @@ public class ApiClient {
 
         log.info("Отправляем HTTP запрос: {}", request);
         var response = getResponse(request);
+
         if (response.statusCode() != 400) {
             return fetchData(response);
         }
