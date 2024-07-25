@@ -58,8 +58,7 @@ public class CallbackHandler {
                 if (weatherCity != null) {
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
                     textToReply = weatherCity;
-                    return new SendMessage(chatId.toString(), textToReply);
-                } else {
+//                    return new SendMessage(chatId.toString(), textToReply);
                     return new SendMessage(chatId.toString(), Constants.ALREADY_USER.replace(
                             "{city}", currentUser.getCity()
                     ).replace(

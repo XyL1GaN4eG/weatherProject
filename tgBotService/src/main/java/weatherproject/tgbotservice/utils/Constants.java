@@ -10,7 +10,7 @@ public class Constants {
             "/start - начало работы\n" +
             "/update - получить информацию о текущей погоде";
     public static final String ALREADY_USER =
-            "Вы уже пользовались этим ботом, сейчас ваш город: {city}, текущая погода в нем: {weather}. " +
+            "Вы уже пользовались этим ботом, сейчас ваш новый город: {city}, текущая погода в нем: {weather}. " +
                     "Если хотите сменить город, то" + PLEASE_SET_CITY.toLowerCase();
     public static final String CITY_NOT_FOUND = "Город не найден";
     public static final String CITY_NOT_SET = "Извините, не могу предоставить погоду, так как вы еще не выбрали город. " + PLEASE_SET_CITY;
