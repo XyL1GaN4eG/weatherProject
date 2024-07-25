@@ -21,11 +21,10 @@ public class StartCommand implements Command {
         var chatId = update.getMessage().getChatId();
         if (currentUser.getState().equals(UserState.HAVE_SETTED_CITY.toString())) {
             //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
+            var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
             return (new SendMessage(chatId.toString(), ALREADY_SET_CITY
                     .replace("{city}", currentUser.getCity())
-                    .replace("{weather}", //TODO: убрать уебский говнокод и заменить на weatherDTO
-                            weatherServiceClient.getWeatherByCity(currentUser.getCity())[1].toString() + " "
-                            + weatherServiceClient.getWeatherByCity(currentUser.getCity())[2].toString())
+                    .replace("{weather}", weather.getTemperature() + " " + weather.getCondition())
             ));
         } else {
             //Если нет, то просто добавляем пользователя в бд и ставим нулл город

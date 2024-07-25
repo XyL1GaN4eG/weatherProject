@@ -3,6 +3,7 @@ package weatherproject.tgbotservice.clients;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import weatherproject.tgbotservice.dto.WeatherDTO;
 
 @Service
 @RequiredArgsConstructor
@@ -31,21 +32,19 @@ public class WeatherServiceClient {
      * @return Массив объектов погоды
      */
 
-    //TODO: сделать weatherdto чтобы можно было удобно доставать данные
-    public Object[] getWeatherByCity(String city) {
+    public WeatherDTO getWeatherByCity(String city) {
         String url = baseUrl + "/city/" + city;
-        return restTemplate.getForObject(url, Object[].class);
+        return new WeatherDTO(restTemplate.getForObject(url, Object[].class));
     }
 
     public String getFormattedWeatherByCity(String city) {
-        var unformattedWeather = getWeatherByCity(city);
+        var weather = getWeatherByCity(city);
 
-        //TODO: вынести в константы "текущая погода" и "погода не найдена"
-        if (unformattedWeather != null) {
-            return String.format("Текущая погода в городе %s: %s, %s",
+        if (weather != null) {
+            return String.format("погода в городе %s: %s, %s",
                     translateClient.translateEngToRussian(city),
-                    translateClient.translateEngToRussian(unformattedWeather[1].toString()),
-                    translateClient.translateEngToRussian(unformattedWeather[2].toString()));
+                    weather.getTemperature(),
+                    translateClient.translateEngToRussian(weather.getCondition()));
         }
         return null;
     }
