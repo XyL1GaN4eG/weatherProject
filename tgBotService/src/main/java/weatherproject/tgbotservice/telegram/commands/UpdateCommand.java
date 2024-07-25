@@ -8,7 +8,7 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 
-import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_SET;
+import static weatherproject.tgbotservice.utils.Constants.*;
 
 //Принудительное обновление погоды
 @Component
@@ -23,9 +23,13 @@ public class UpdateCommand implements Command{
         if (currentUser.getCity().equals("null")) {
             return (new SendMessage(update.getMessage().getChatId().toString(), CITY_NOT_SET));
         } else {
+            var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
             //в ином случае предоставляем текущую погоду о городе
             return new SendMessage(update.getMessage().getChatId().toString(),
-                    weatherServiceClient.getFormattedWeatherByCity(currentUser.getCity()));
+                    ALREADY_SET_CITY
+                            .replace("{city}", weather.getCity())
+                            .replace("{temperature}", weather.getTemperature().toString())
+                            .replace("{condition}", weather.getCondition()));
         }
     }
 }

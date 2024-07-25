@@ -18,13 +18,14 @@ public class StartCommand implements Command {
     private final UserServiceClient userServiceClient;
     private final WeatherServiceClient weatherServiceClient;
     private final GoogleTranslateClient translateClient;
+
+    //TODO: добавить кнопку с запросом геолокации пользователя
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {
         var chatId = update.getMessage().getChatId();
         if (currentUser.getState().equals(UserState.HAVE_SETTED_CITY.toString())) {
             //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
             var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
-            //TODO: добавить перевод города и состояния температуры
             return (new SendMessage(chatId.toString(), ALREADY_SET_CITY
                     .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
                     .replace("{temperature}", weather.getTemperature().toString())

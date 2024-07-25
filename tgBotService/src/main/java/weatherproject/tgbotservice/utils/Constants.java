@@ -3,16 +3,13 @@ package weatherproject.tgbotservice.utils;
 
 public class Constants {
     public static final String PLEASE_SET_CITY = "Введите, пожалуйста, название города или отправьте свою геолокацию";
-    private static final String WEATHER_IN_CITY_IS = "{city}, погода в нем: {temperature}, {condition}";
+    private static final String WEATHER_IN_CITY_IS = "{city}, погода в нем: {temperature}, {condition}. ";
     public static final String START_MESSAGE = "Приветствую! " +
             "Это WeatherBot - бот, с помощью которого можно получить информацию о погоде." + PLEASE_SET_CITY;
     public static final String HELP_MESSAGE =
             "Команды:\n" +
             "/start - начало работы\n" +
             "/update - получить информацию о текущей погоде";
-    public static final String ALREADY_USER =
-            "Вы уже пользовались этим ботом, сейчас ваш новый город: {city}, текущая погода в нем: {weather}. " +
-                    "Если хотите сменить город, то " + PLEASE_SET_CITY.toLowerCase();
     public static final String ALREADY_SET_CITY =
             "Вы уже пользовались этим ботом, сейчас ваш текущий город: " + WEATHER_IN_CITY_IS +
                     "Если хотите сменить город, то " + PLEASE_SET_CITY.toLowerCase();
