@@ -34,7 +34,7 @@ public class ApiClient {
     }
 
     public Object[] getWeather(String city) {
-        var urlForRequest = url.replace("{city}", city);
+        var urlForRequest = url.replace("{city}", city.replace(" ", "-"));
         log.info("Метод getWeather успешно вызвался для города: {}, для запроса по следующему api: {}", city, urlForRequest);
         log.info("Собираем http реквест на адрес: {}", urlForRequest);
         HttpRequest request = HttpRequest.newBuilder()
