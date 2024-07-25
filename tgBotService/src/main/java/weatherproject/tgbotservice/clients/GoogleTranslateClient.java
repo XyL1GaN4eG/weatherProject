@@ -28,7 +28,11 @@ public class GoogleTranslateClient {
     }
 
     public String translateRuToEng(String text) {
-        if (isEnglish(text)) return text;
+        if (isEnglish(text)) {
+            log.info("Название города уже на английском, перевод не требуется: {}", text);
+            return text;
+        }
+        log.info("Название города {} на русском, переводим", text);
         return translateFromTo("ru", "en", text);
     }
 
