@@ -47,7 +47,7 @@ public class CallbackHandler {
                 if (weatherCity != null) {
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
                     textToReply = NEW_CITY_SETTED
-                            .replace("{city}", weatherCity.getCity())
+                            .replace("{city}", translateClient.translateEngToRussian(weatherCity.getCity()))
                             .replace("{temperature}", weatherCity.getTemperature().toString())
                             .replace("{condition}", weatherCity.getCondition());
                 }
@@ -72,11 +72,11 @@ public class CallbackHandler {
                     //обновляем город пользователя
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
                     textToReply = NEW_CITY_SETTED
-                            .replace("{city}", translateClient.translateRuToEng(city))
+                            .replace("{city}", translateClient.translateEngToRussian(city))
                             .replace("{temperature}", weatherCity.getTemperature().toString())
-                            .replace("{condition}", weatherCity.getCondition());
+                            .replace("{condition}", translateClient.translateEngToRussian(weatherCity.getCondition()));
                 } else {
-                    textToReply = CITY_NOT_FOUND.replace("city", city);
+                    textToReply = CITY_NOT_FOUND.replace("city", translateClient.translateEngToRussian(city));
                 }
 
             }
