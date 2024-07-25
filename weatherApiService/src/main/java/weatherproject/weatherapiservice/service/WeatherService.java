@@ -30,7 +30,7 @@ public class WeatherService {
         var cityWeather = weatherRepository.findLatestByCity(city);
         log.info("Получены данные о погоде в городе {}: {}", city, cityWeather);
         // Если город не найден
-        if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1) {
+        if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30) {
             log.info("Город не найден или прошло больше часа с последнего обновления. Начинаем запрос к API");
             Object[] weatherData = apiClient.getWeather(city);
             if (weatherData != null) {
@@ -50,19 +50,20 @@ public class WeatherService {
                     log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
                 }
             } else {
-                log.info("Город {} не найден, возвращаем null");
+                log.info("Город {} не найден, возвращаем null", city);
                 return null;
             }
+            var result = new Object[3];
+            //Данные точно не нулл, потому что мы это уже проверили ранее
+            assert cityWeather != null;
+            result[0] = cityWeather.getCity();
+            result[1] = cityWeather.getTemperature();
+            result[2] = cityWeather.getCondition();
+            log.info("Возвращаем данные о погоде в городе");
+            return result;
         }
 
-        var result = new Object[3];
-        //Данные точно не нулл, потому что мы это уже проверили ранее
-        assert cityWeather != null;
-        result[0] = cityWeather.getCity();
-        result[1] = cityWeather.getTemperature();
-        result[2] = cityWeather.getCondition();
-        log.info("Возвращаем данные о погоде в городе");
-        return result;
+        return null;
     }
 
     public List<CityWeather> getAllCitiesWeather() {

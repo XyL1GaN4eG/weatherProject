@@ -2,15 +2,22 @@ package weatherproject.tgbotservice.telegram;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import weatherproject.tgbotservice.clients.UserServiceClient;
+import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.config.BotConfig;
+import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.telegram.callbacks.CallbackHandler;
 import weatherproject.tgbotservice.telegram.commands.CommandHandler;
+import weatherproject.tgbotservice.utils.Constants;
 
 //import static weatherproject.tgbotservice.utils.Constants.CANT_UNDERSTAND;
 
@@ -23,6 +30,7 @@ public class TelegramBot extends TelegramLongPollingBot {
     public final CommandHandler commandsHandler;
     public final CallbackHandler callbacksHandler;
     public final UserServiceClient userServiceClient;
+    private final WeatherServiceClient weatherServiceClient;
 
     @Override
     public String getBotUsername() {
@@ -48,6 +56,34 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
     }
+    @RabbitListener(queues = "weather-notification-queue")
+    public void handleChangeAvgTemp(String message) {
+        JSONParser parser = new JSONParser();
+        try {
+            // Парсинг JSON строки в JSONObject
+            JSONObject jsonObject = (JSONObject) parser.parse(message);
+
+            // Извлечение данных из JSONObject
+            String city = (String) jsonObject.get("city");
+            String lastTemp = jsonObject.get("last_temp").toString();
+            String diffTemp = jsonObject.get("diff_temp").toString();
+
+            var users = userServiceClient.getUsersByCity(city);
+            for (UserDTO currentUser : users) {
+                sendMessage(new SendMessage(
+                        currentUser.getChatId().toString(), Constants.CHANGE_AVG_WEATHER
+                        .replace("{city}", city)
+                        .replace("diff_temp", diffTemp)
+                        .replace("temp_now", lastTemp)
+                ));
+            }
+        } catch (ParseException e) {
+            log.error("Произошла ошибка при парсинге строки {}, ошибка: {}", message, e.getStackTrace());
+        }
+
+
+
+    }
 
     private void sendMessage(SendMessage sendMessage) {
         try {
@@ -57,6 +93,7 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
+}
 
     /*
     //Метод для расписания уведомлений.
@@ -77,7 +114,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 /*
     //TODO: добавить класс для хттп запросов, и через него обращаться к userservice
     //TODO: переписать для поддержки триггера бд
-    @RabbitListener(queues = NOTIFICATION_QUEUE)
+    @Listener(queues = NOTIFICATION_QUEUE)
     private void sendNotification(String jsonWeather) {
         var data = fetchData(jsonWeather);
 
@@ -115,4 +152,3 @@ public class TelegramBot extends TelegramLongPollingBot {
         return new String[]{city, newAvgTemp, tempChange};
     }
  */
-}

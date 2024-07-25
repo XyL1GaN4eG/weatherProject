@@ -33,7 +33,7 @@ public class UserServiceClient {
         return restTemplate.getForObject(url, UserDTO.class);
     }
 
-    public List<UserDTO> getUserByCity(String city) {
+    public List<UserDTO> getUsersByCity(String city) {
         String url = baseUrl + "/city/" + city;
         ResponseEntity<UserDTO[]> response = restTemplate.getForEntity(url, UserDTO[].class);
         return List.of(response.getBody());
