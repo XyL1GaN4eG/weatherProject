@@ -43,6 +43,7 @@ public class GoogleTranslateClient {
                     "&target=" + langTo +
                     "&source=" + langFrom;
             URL url = new URL(urlStr);
+            log.info("Переводим слово {} с {} на {}", text, langFrom, langTo);
             StringBuilder response = new StringBuilder();
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
@@ -52,7 +53,9 @@ public class GoogleTranslateClient {
                 response.append(inputLine);
             }
             in.close();
-            return response.toString();
+            var translatedWord = response.toString();
+            log.info("Слово {} переведено: {}", text, response);
+            return translatedWord;
         } catch (IOException e) {
             log.error("Произошла ошибка при переводе с  {} на {} следующего текста: {}. Подробности: {}", langFrom, langTo, text, e.getMessage());
             return "null";
