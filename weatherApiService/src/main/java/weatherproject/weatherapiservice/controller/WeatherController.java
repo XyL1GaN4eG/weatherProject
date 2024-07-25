@@ -2,6 +2,7 @@ package weatherproject.weatherapiservice.controller;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/weather")
 @RequiredArgsConstructor
+@Slf4j
 public class WeatherController {
     @Autowired
     private WeatherService weatherService;
@@ -34,7 +36,9 @@ public class WeatherController {
 
     @GetMapping("/city/{city}")
     public WeatherDTO getWeatherByCity(@PathVariable String city) {
-        return weatherService.processWeatherRequest(city);
+        WeatherDTO weatherDTO = weatherService.processWeatherRequest(city);
+        log.info("Отправляем ответ {} по рест апи", weatherDTO);
+        return weatherDTO;
     }
 
 }
