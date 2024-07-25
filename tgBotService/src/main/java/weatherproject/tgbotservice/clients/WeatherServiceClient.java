@@ -31,7 +31,7 @@ public class WeatherServiceClient {
      * @return Массив объектов погоды
      */
     public Object[] getWeatherByCity(String city) {
-        String url = baseUrl + "/city?city=" + city;
+        String url = baseUrl + "/city/" + city;
         return restTemplate.getForObject(url, Object[].class);
     }
 
