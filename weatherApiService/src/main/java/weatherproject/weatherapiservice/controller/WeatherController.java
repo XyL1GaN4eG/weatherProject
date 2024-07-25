@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import weatherproject.weatherapiservice.entity.CityWeather;
+import weatherproject.weatherapiservice.dto.WeatherDTO;
+import weatherproject.weatherapiservice.entity.WeatherEntity;
 import weatherproject.weatherapiservice.service.WeatherService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -22,12 +24,16 @@ public class WeatherController {
     private WeatherService weatherService;
 
     @GetMapping
-    public List<CityWeather> getWeather() {
-        return weatherService.getAllCitiesWeather();
+    public List<WeatherDTO> getWeather() {
+        var weatherList = new ArrayList<WeatherDTO>();
+        for (WeatherEntity weather : weatherService.getAllCitiesWeather()) {
+            weatherList.add(new WeatherDTO(weather));
+        }
+        return weatherList;
     }
 
     @GetMapping("/city/{city}")
-    public Object[] getWeatherByCity(@PathVariable String city) {
+    public WeatherDTO getWeatherByCity(@PathVariable String city) {
         return weatherService.processWeatherRequest(city);
     }
 

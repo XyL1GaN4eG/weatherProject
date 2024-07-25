@@ -6,6 +6,7 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import weatherproject.weatherapiservice.config.RabbitMQConfig;
+import weatherproject.weatherapiservice.dto.WeatherDTO;
 import weatherproject.weatherapiservice.service.WeatherService;
 
 @Component
@@ -25,11 +26,7 @@ public class WeatherRequestListener {
     @RabbitListener(queues = RabbitMQConfig.REQUEST_QUEUE)
     public void receiveRequest(String city) {
         log.info("Получено сообщение от внешнего микросервиса получить погоду по городу: {}", city);
-        Object[] weather = weatherService.processWeatherRequest(city);
-        if (weather != null) {
-            rabbitTemplate.convertAndSend(responseQueue, weather);
-        } else {
-            rabbitTemplate.convertAndSend(responseQueue, new String[0]);
-        }
+        WeatherDTO weather = weatherService.processWeatherRequest(city);
+        rabbitTemplate.convertAndSend(responseQueue, weather);
     }
 }

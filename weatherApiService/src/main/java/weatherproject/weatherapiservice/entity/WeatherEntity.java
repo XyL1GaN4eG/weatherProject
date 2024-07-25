@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CityWeather {
+public class WeatherEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,7 +29,7 @@ public class CityWeather {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public CityWeather(String city, Double temperature, String condition) {
+    public WeatherEntity(String city, Double temperature, String condition) {
         this.city = city;
         this.temperature = temperature;
         this.condition = condition;
