@@ -3,7 +3,10 @@ package weatherproject.weatherapiservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import weatherproject.weatherapiservice.entity.CityWeather;
 import weatherproject.weatherapiservice.service.WeatherService;
 
@@ -25,7 +28,11 @@ public class WeatherController {
 
     @GetMapping("/city/{city}")
     public Object[] getWeatherByCity(@PathVariable String city) {
-        return weatherService.processWeatherRequest(city);
+        var cityWeather = weatherService.processWeatherRequest(city);
+        if (cityWeather != null) {
+            return cityWeather;
+        }
+        return new String[0];
     }
 
 }

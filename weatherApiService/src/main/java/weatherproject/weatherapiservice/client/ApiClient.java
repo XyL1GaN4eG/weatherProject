@@ -1,7 +1,5 @@
 package weatherproject.weatherapiservice.client;
 
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,8 +43,11 @@ public class ApiClient {
                 .build();
 
         log.info("Отправляем HTTP запрос: {}", request);
-
-        return fetchData(getResponse(request));
+        var response = getResponse(request);
+        if (response.statusCode() != 400) {
+            return fetchData(response);
+        }
+        return null;
     }
 
     private HttpResponse<String> getResponse(HttpRequest request) {

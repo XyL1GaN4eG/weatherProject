@@ -51,21 +51,6 @@ public class TelegramBot extends TelegramLongPollingBot {
         }
     }
 
-
-//    private void onUpdateReceived(Update update) {
-//        if (update.message() != null && update.message().text() != null) {
-//            String chatId = update.message().chat().id().toString();
-//            //Если /start
-//            if ("/".equals(update.message().text())) {
-//                sendMessage(commandsHandler.handleCommand(update));
-//            } else {
-//                sendMessage(new SendMessage(chatId, CANT_UNDERSTAND));
-//            }
-//        } else if (update.getMessage() != null) {
-//            sendMessage(callbacksHandler.handleCallback(update));
-//        }
-//    }
-
     private void sendMessage(SendMessage sendMessage) {
         try {
             execute(sendMessage);

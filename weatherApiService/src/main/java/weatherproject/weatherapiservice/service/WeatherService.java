@@ -33,20 +33,25 @@ public class WeatherService {
         if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1) {
             log.info("Город не найден или прошло больше часа с последнего обновления. Начинаем запрос к API");
             Object[] weatherData = apiClient.getWeather(city);
-            log.info(
-                    "Данные о погоде после запроса к API " +
-                            "(в processWeatherRequest): {}, {}, {}",
-                    weatherData[0],
-                    weatherData[1],
-                    weatherData[2]);
-            try {
-                log.info("Попытка распарсить данные");
-                cityWeather = new CityWeather((String) weatherData[0], (Double) weatherData[1], (String) weatherData[2]);
-                weatherRepository.save(cityWeather);
-                log.info("Данные о погоде в городе {} сохранены в базу данных", city);
-                return weatherData;
-            } catch (ClassCastException e) {
-                log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
+            if (weatherData != null) {
+                log.info(
+                        "Данные о погоде после запроса к API " +
+                                "(в processWeatherRequest): {}, {}, {}",
+                        weatherData[0],
+                        weatherData[1],
+                        weatherData[2]);
+                try {
+                    log.info("Попытка распарсить данные");
+                    cityWeather = new CityWeather((String) weatherData[0], (Double) weatherData[1], (String) weatherData[2]);
+                    weatherRepository.save(cityWeather);
+                    log.info("Данные о погоде в городе {} сохранены в базу данных", city);
+                    return weatherData;
+                } catch (ClassCastException e) {
+                    log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
+                }
+            } else {
+                log.info("Город {} не найден, возвращаем null");
+                return null;
             }
         }
 
@@ -73,14 +78,18 @@ public class WeatherService {
                 continue;
             }
             var weatherDataFromApi = apiClient.getWeather(cityWeather.getCity());
+            if (weatherDataFromApi != null) {
 //            cityWeather.setCity(weatherDataFromApi[0].toString());
-            cityWeather.setTemperature((Double) weatherDataFromApi[1]);
-            cityWeather.setCondition((String) weatherDataFromApi[2]);
-            weatherRepository.save(cityWeather);
-            log.info("Данные о погоде в городе {} обновлены в базу данных: {}, {}",
-                    cityWeather.getCity(),
-                    cityWeather.getTemperature(),
-                    cityWeather.getCondition());
+                cityWeather.setTemperature((Double) weatherDataFromApi[1]);
+                cityWeather.setCondition((String) weatherDataFromApi[2]);
+                weatherRepository.save(cityWeather);
+                log.info("Данные о погоде в городе {} обновлены в базу данных: {}, {}",
+                        cityWeather.getCity(),
+                        cityWeather.getTemperature(),
+                        cityWeather.getCondition());
+            } else {
+                log.info("Город {} не найден", cityWeather.getCity());
+            }
         }
     }
 }
