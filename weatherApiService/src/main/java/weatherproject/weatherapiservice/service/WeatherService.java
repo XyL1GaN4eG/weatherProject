@@ -28,7 +28,7 @@ public class WeatherService {
     public Object[] processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
         var cityWeather = weatherRepository.findLatestByCity(city);
-        log.info("Полученные данные о погоде: {}", cityWeather);
+        log.info("Получены данные о погоде в городе {}: {}", city, cityWeather);
         // Если город не найден
         if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1) {
             log.info("Город не найден или прошло больше часа с последнего обновления. Начинаем запрос к API");
@@ -73,23 +73,7 @@ public class WeatherService {
         var cities = weatherRepository.findAll();
         for (CityWeather cityWeather : cities) {
 
-            if (!(Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1)) {
-                log.info("Данные о погоде в городе {} не обновляются, так как прошло меньше часа с последнего обновления", cityWeather.getCity());
-                continue;
-            }
-            var weatherDataFromApi = apiClient.getWeather(cityWeather.getCity());
-            if (weatherDataFromApi != null) {
-//            cityWeather.setCity(weatherDataFromApi[0].toString());
-                cityWeather.setTemperature((Double) weatherDataFromApi[1]);
-                cityWeather.setCondition((String) weatherDataFromApi[2]);
-                weatherRepository.save(cityWeather);
-                log.info("Данные о погоде в городе {} обновлены в базу данных: {}, {}",
-                        cityWeather.getCity(),
-                        cityWeather.getTemperature(),
-                        cityWeather.getCondition());
-            } else {
-                log.info("Город {} не найден", cityWeather.getCity());
-            }
+            processWeatherRequest(cityWeather.getCity());
         }
     }
 }

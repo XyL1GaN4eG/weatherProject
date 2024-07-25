@@ -8,6 +8,7 @@ import weatherproject.tgbotservice.dto.UserDTO;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
+import weatherproject.tgbotservice.telegram.UserState;
 
 @Service
 public class UserServiceClient {
@@ -40,6 +41,11 @@ public class UserServiceClient {
 
     public void createOrUpdateUser(UserDTO userDTO) {
         restTemplate.postForObject(baseUrl, userDTO, Void.class);
+    }
+
+    public void createNewUser(Long chatId) {
+        restTemplate.postForObject(baseUrl, new UserDTO(chatId, "null", UserState.START.toString()), Void.class);
+
     }
 
     public void deleteUser(Long id) {
