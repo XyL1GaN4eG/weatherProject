@@ -3,10 +3,7 @@ package weatherproject.weatherapiservice.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import weatherproject.weatherapiservice.entity.CityWeather;
 import weatherproject.weatherapiservice.service.WeatherService;
 
@@ -27,7 +24,7 @@ public class WeatherController {
     }
 
     @GetMapping("/city/{city}")
-    public Object[] getWeatherByCity(@RequestParam String city) {
+    public Object[] getWeatherByCity(@PathVariable String city) {
         return weatherService.processWeatherRequest(city);
     }
 
