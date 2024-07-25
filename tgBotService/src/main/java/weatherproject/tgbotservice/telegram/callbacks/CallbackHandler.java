@@ -13,7 +13,8 @@ import weatherproject.tgbotservice.telegram.UserState;
 import weatherproject.tgbotservice.utils.Constants;
 
 import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
-import static weatherproject.tgbotservice.utils.Constants.*;
+import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_FOUND;
+import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
 
 @RequiredArgsConstructor
 @Component
@@ -32,13 +33,11 @@ public class CallbackHandler {
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
         //TODO: вынести обработку сообщения и присваивания названия города в отдельный метод
         //TODO: вынести коллбэки в отдельные классы
-        //TODO: делать проверку в тексте на то, город ли это вообще
+        //TODO: делать проверку в сообщении на то, город ли это вообще
         switch (currentState) {
             case START: {
                 if (update.getMessage().hasText()) {
-                    city = translateClient.translateRuToEng(
-                            update.getMessage().getText())
-                            .replace(" ", "-");
+                    city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
                 } else if (update.getMessage().hasLocation()) {
                     city = geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
@@ -47,14 +46,17 @@ public class CallbackHandler {
                 var weatherCity = weatherServiceClient.getWeatherByCity(city);
                 if (weatherCity != null) {
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
-                    textToReply = JUST_SET_CITY
+                    textToReply = NEW_CITY_SETTED
                             .replace("{city}", weatherCity.getCity())
                             .replace("{temperature}", weatherCity.getTemperature().toString())
                             .replace("{condition}", weatherCity.getCondition());
                 }
                 return new SendMessage(chatId.toString(), textToReply);
             }
+
+            //Если город уже выставлен
             case HAVE_SETTED_CITY: {
+                //то обращаемся к апи и возвращаем название города в на английском языке
                 if (update.getMessage().hasText()) {
                     city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
                 } else if (update.getMessage().hasLocation()) {
@@ -62,15 +64,21 @@ public class CallbackHandler {
                             update.getMessage().getLocation().getLatitude(),
                             update.getMessage().getLocation().getLongitude());
                 }
-                var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
-                if (weatherCity != null) {
+                //получаем погоду из апи микросервиса
+                var weatherCity = weatherServiceClient.getWeatherByCity(city);
+
+                //TODO: добавить чтобы если город не найден, то написать об этом в сообщении
+                if (weatherCity != null) { //если погода найдена то
+                    //обновляем город пользователя
                     userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
+                    textToReply = NEW_CITY_SETTED
+                            .replace("{city}", translateClient.translateRuToEng(city))
+                            .replace("{temperature}", weatherCity.getTemperature().toString())
+                            .replace("{condition}", weatherCity.getCondition());
+                } else {
+                    textToReply = CITY_NOT_FOUND.replace("city", city);
                 }
-                return new SendMessage(chatId.toString(), Constants.ALREADY_USER.replace(
-                        "{city}", currentUser.getCity()
-                ).replace(
-                        "{weather}", weatherServiceClient.getFormattedWeatherByCity(currentUser.getCity())
-                ));
+
             }
         }
         return new SendMessage(chatId.toString(), textToReply);

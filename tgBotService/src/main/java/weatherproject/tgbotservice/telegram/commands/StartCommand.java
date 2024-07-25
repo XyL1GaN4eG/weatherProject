@@ -22,6 +22,7 @@ public class StartCommand implements Command {
         if (currentUser.getState().equals(UserState.HAVE_SETTED_CITY.toString())) {
             //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
             var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
+            //TODO: добавить перевод города и состояния температуры
             return (new SendMessage(chatId.toString(), ALREADY_SET_CITY
                     .replace("{city}", currentUser.getCity())
                     .replace("{weather}", weather.getTemperature() + " " + weather.getCondition())
