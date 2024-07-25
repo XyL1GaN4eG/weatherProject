@@ -12,6 +12,9 @@ public class Constants {
     public static final String ALREADY_USER =
             "Вы уже пользовались этим ботом, сейчас ваш новый город: {city}, текущая погода в нем: {weather}. " +
                     "Если хотите сменить город, то " + PLEASE_SET_CITY.toLowerCase();
+    public static final String ALREADY_SET_CITY =
+            "Вы уже пользовались этим ботом, сейчас ваш текущий город: {city}, погода в нем: {weather}. " +
+                    "Если хотите сменить город, то " + PLEASE_SET_CITY.toLowerCase();
     public static final String JUST_SET_CITY = "Поздравляю, ваш текущий город - {city}, погода в нем: {temperature}, condition";
     public static final String CITY_NOT_FOUND = "Город не найден";
     public static final String CITY_NOT_SET = "Извините, не могу предоставить погоду, так как вы еще не выбрали город. " + PLEASE_SET_CITY;

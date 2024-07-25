@@ -10,7 +10,7 @@ import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.telegram.UserState;
 import weatherproject.tgbotservice.utils.Constants;
 
-import static weatherproject.tgbotservice.utils.Constants.ALREADY_USER;
+import static weatherproject.tgbotservice.utils.Constants.*;
 @RequiredArgsConstructor
 @Component
 public class StartCommand implements Command {
@@ -21,9 +21,11 @@ public class StartCommand implements Command {
         var chatId = update.getMessage().getChatId();
         if (currentUser.getState().equals(UserState.HAVE_SETTED_CITY.toString())) {
             //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
-            return (new SendMessage(chatId.toString(), ALREADY_USER
+            return (new SendMessage(chatId.toString(), ALREADY_SET_CITY
                     .replace("{city}", currentUser.getCity())
-                    .replace("{weather}", weatherServiceClient.getFormattedWeatherByCity(currentUser.getCity()))
+                    .replace("{weather}", //TODO: убрать уебский говнокод и заменить на weatherDTO
+                            weatherServiceClient.getWeatherByCity(currentUser.getCity())[1].toString() + " "
+                            + weatherServiceClient.getWeatherByCity(currentUser.getCity())[2].toString())
             ));
         } else {
             //Если нет, то просто добавляем пользователя в бд и ставим нулл город
