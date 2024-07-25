@@ -31,8 +31,8 @@ rabbitmq:
   password: guest
 
 
-#weather:
-#  api:
-#    url:
-#      "http://api.weatherapi.com/v1/current.json?key=b754ca0088e64db9afe102203240306&q={city}&aqi=no"
+weather:
+  api:
+    url:
+      "http://api.weatherapi.com/v1/current.json?key=b754ca0088e64db9afe102203240306&q={city}&aqi=no"
 #      "http://api.weatherapi.com/v1/current.json?key=${WEATHER_API_KEY}&q={city}&aqi=yes"
