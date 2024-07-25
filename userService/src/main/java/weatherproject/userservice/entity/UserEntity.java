@@ -18,4 +18,8 @@ public class UserEntity {
     private Long chatId;
     private String city;
     private String state;
+    @Override
+    public String toString() {
+        return "[chatId=" + chatId + ", city=" + city + ", state=" + state + "]";
+    }
 }

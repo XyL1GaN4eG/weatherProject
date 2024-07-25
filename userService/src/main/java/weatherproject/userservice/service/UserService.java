@@ -26,6 +26,13 @@ public class UserService {
 
     public UserEntity getUserByChatId(Long id) {
         log.info("Получение пользователя по id");
+        var user =userRepository.findById(id).orElse(null);
+        if (user != null) {
+            log.info("Пользователь {} найден, возвращаем его", user);
+            return user;
+        }
+        log.info("Пользователь {} не найден, создаем его", user);
+        createOrUpdateUser(new UserEntity(id, "null", "START"));
         return userRepository.findById(id).orElse(null);
     }
 
@@ -34,13 +41,16 @@ public class UserService {
         return userRepository.findByCity(city);
     }
 
-    public void createOrUpdateUser(UserDTO tgUser) {
-        log.info("Создание или обновление пользователя: {}",
-                tgUser.toString());
-        if (((UserEntity) userRepository.findById(tgUser.getChatId()).orElse(new UserEntity())).getCity().equals("null")) {
+    public void createOrUpdateUser(UserEntity userEntity) {
+        log.info("Создание или обновление пользователя с chatId={}",
+                userEntity.getChatId());
+        userRepository.save(userEntity);
+    }
 
-        }
-        userRepository.save(userDtoToUserEntity(tgUser));
+    public void createOrUpdateUser(UserDTO userDTO) {
+        log.info("Создание или обновление пользователя с chatId={}",
+                userDTO.getChatId());
+        userRepository.save(userDtoToUserEntity(userDTO));
     }
 
     public void deleteUser(Long id) {
