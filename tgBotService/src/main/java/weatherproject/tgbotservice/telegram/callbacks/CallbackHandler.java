@@ -31,6 +31,7 @@ public class CallbackHandler {
         String textToReply = "Просим прощения, город или погода в нем не найдены.";
 
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
+
 //        switch (currentState) {
 //            case START: {
 //                if (update.getMessage().hasText()) {
@@ -80,14 +81,14 @@ public class CallbackHandler {
                     city = geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
                             update.getMessage().getLocation().getLongitude());
-                    var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
-                    if (weatherCity != null) {
-                        userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
-                        textToReply = weatherCity;
-                        return new SendMessage(chatId.toString(), textToReply);
-                    } else {
-                        return new SendMessage(chatId.toString(), Constants.ALREADY_USER);
-                    }
+                }
+                var weatherCity = weatherServiceClient.getFormattedWeatherByCity(city);
+                if (weatherCity != null) {
+                    userServiceClient.createOrUpdateUser(new UserDTO(currentUser.getChatId(), city, HAVE_SETTED_CITY.toString()));
+                    textToReply = weatherCity;
+                    return new SendMessage(chatId.toString(), textToReply);
+                } else {
+                    return new SendMessage(chatId.toString(), Constants.ALREADY_USER);
                 }
             }
         }
