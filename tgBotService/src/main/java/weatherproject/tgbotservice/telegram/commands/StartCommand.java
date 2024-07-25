@@ -19,7 +19,7 @@ public class StartCommand implements Command {
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {
         var chatId = update.getMessage().getChatId();
-        if (currentUser.getState().equals("ALREADY_USER")) {
+        if (currentUser.getState().equals(UserState.HAVE_SETTED_CITY.toString())) {
             //Если у пользователя уже выставлен город, то говорим текущую погоду и предлагаем поставить новый город
             return (new SendMessage(chatId.toString(), ALREADY_USER
                     .replace("{city}", currentUser.getCity())
