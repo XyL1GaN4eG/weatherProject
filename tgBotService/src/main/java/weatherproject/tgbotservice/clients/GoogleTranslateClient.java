@@ -1,5 +1,6 @@
 package weatherproject.tgbotservice.clients;
 
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.BufferedReader;
@@ -10,6 +11,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 
 @Slf4j
+@NoArgsConstructor
 public class GoogleTranslateClient {
     private boolean isRussian(String text) {
         return text.matches("[а-яА-ЯёЁ\\s]+");
