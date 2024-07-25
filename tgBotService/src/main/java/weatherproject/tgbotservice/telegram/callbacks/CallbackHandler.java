@@ -31,6 +31,7 @@ public class CallbackHandler {
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
         //TODO: вынести обработку сообщения и присваивания названия города в отдельный метод
         //TODO: вынести коллбэки в отдельные классы
+        //TODO: делать проверку в тексте на то, город ли это вообще 
         switch (currentState) {
             case START: {
                 if (update.getMessage().hasText()) {
