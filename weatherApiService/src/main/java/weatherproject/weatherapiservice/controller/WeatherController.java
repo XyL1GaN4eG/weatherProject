@@ -17,6 +17,8 @@ import java.util.List;
 
 
 //Если вдруг понадобится рест апи то дописать
+//TODO: переписать с использованием ResponseEntity, чтобы можно было более удобно передавать коды ошибок и дальше их обрабатывать
+//TODO: но перед этим написать тесты хихи
 @RestController
 @RequestMapping("/weather")
 @RequiredArgsConstructor

@@ -29,16 +29,26 @@ public class WeatherService {
     public WeatherDTO processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
         var cityWeather = weatherRepository.findLatestByCity(city);
-        log.info("Получены данные о погоде в городе {}: {}", city, cityWeather);
+        log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
+
         // Если город не найден
-        if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30) {
+        boolean isCityNull = cityWeather == null;
+        boolean isEnoughTimeBetweenUpdates = false;
+        //..или если город найден, но прошло слишком мало времени между запросами на город
+        if (cityWeather != null) {
+            isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
+        }
+        if (isCityNull || isEnoughTimeBetweenUpdates) {
             try {
                 log.info("Город не найден {} или прошло больше часа с последнего обновления {}. Начинаем запрос к API",
                         cityWeather == null,
                         Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30);
             } catch (NullPointerException ignored) {
             }
+
+            // обращаемся к апи погоды
             Object[] weatherData = apiClient.getWeather(city);
+            // если город найден и данные пришли
             if (weatherData != null) {
                 log.info(
                         "Данные о погоде после запроса к API " +
@@ -61,10 +71,13 @@ public class WeatherService {
                 }
 
             }
+            // если данные с апи погоды не пришли
+            return null;
+
         } else {
+            // если не прошло достаточно времени или город вообще не найден
             return new WeatherDTO(cityWeather);
         }
-        return null;
     }
 
     public List<WeatherEntity> getAllCitiesWeather() {
