@@ -39,9 +39,9 @@ public class CallbackHandler {
                 if (update.getMessage().hasText()) {
                     city = translateClient.translateRuToEng(update.getMessage().getText()).replace(" ", "-");
                 } else if (update.getMessage().hasLocation()) {
-                    city = geocodingClient.getCityByCoordinates(
+                    city = translateClient.translateRuToEng(geocodingClient.getCityByCoordinates(
                             update.getMessage().getLocation().getLatitude(),
-                            update.getMessage().getLocation().getLongitude());
+                            update.getMessage().getLocation().getLongitude()));
                 }
                 var weatherCity = weatherServiceClient.getWeatherByCity(city);
                 if (weatherCity != null) {
