@@ -36,4 +36,11 @@ public class WeatherEntity {
         this.condition = condition;
         this.updatedAt = LocalDateTime.now();
     }
+
+    public WeatherEntity(Object[] object) {
+        this.city = object[0].toString();
+        this.temperature = (Double) object[1];
+        this.condition = object[2].toString();
+        this.updatedAt = LocalDateTime.now();
+    }
 }

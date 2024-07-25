@@ -32,7 +32,12 @@ public class WeatherService {
         log.info("Получены данные о погоде в городе {}: {}", city, cityWeather);
         // Если город не найден
         if (cityWeather == null || Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30) {
-            log.info("Город не найден или прошло больше часа с последнего обновления. Начинаем запрос к API");
+            try {
+                log.info("Город не найден {} или прошло больше часа с последнего обновления {}. Начинаем запрос к API",
+                        cityWeather == null,
+                        Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30);
+            } catch (NullPointerException ignored) {
+            }
             Object[] weatherData = apiClient.getWeather(city);
             if (weatherData != null) {
                 log.info(
@@ -43,7 +48,7 @@ public class WeatherService {
                         weatherData[2]);
                 try {
                     log.info("Попытка распарсить данные");
-                    cityWeather = new WeatherEntity((String) weatherData[0], (Double) weatherData[1], (String) weatherData[2]);
+                    cityWeather = new WeatherEntity(weatherData);
                     try {
                         weatherRepository.save(cityWeather);
                         log.info("Данные о погоде в городе {} сохранены в базу данных", city);
