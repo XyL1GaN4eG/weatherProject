@@ -49,7 +49,7 @@ public class CallbackHandler {
                     textToReply = NEW_CITY_SETTED
                             .replace("{city}", translateClient.translateEngToRussian(weatherCity.getCity()))
                             .replace("{temperature}", weatherCity.getTemperature().toString())
-                            .replace("{condition}", weatherCity.getCondition());
+                            .replace("{condition}", translateClient.translateEngToRussian(weatherCity.getCondition()));
                 }
                 return new SendMessage(chatId.toString(), textToReply);
             }
