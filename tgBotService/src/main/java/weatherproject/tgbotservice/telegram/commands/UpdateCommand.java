@@ -27,8 +27,9 @@ public class UpdateCommand implements Command {
         if (currentUser.getCity().equals("null")) {
             return (new SendMessage(update.getMessage().getChatId().toString(), CITY_NOT_SET));
         } else {
+            log.info("Получаем погоду для пользователя {} для города {}", currentUser.getChatId(), currentUser.getCity());
             var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
-            //в ином случае предоставляем текущую погоду о городе
+            log.info("Успешно получена погода для пользователя {}: {}", currentUser.getChatId(), weather);
             return new SendMessage(update.getMessage().getChatId().toString(),
                     ALREADY_SET_CITY
                             .replace("{city}", translateClient.translateEngToRussian(weather.getCity()))

@@ -46,10 +46,15 @@ public class TelegramBot extends TelegramLongPollingBot {
     public void onUpdateReceived(Update update) {
         var chatId = update.getMessage().getChatId();
         log.info("Получено новое сообщение: {}", chatId);
-        var currentUser = userServiceClient.getUserById(update.getMessage().getChatId());
-        if (currentUser == null) userServiceClient.createNewUser(chatId);
+        var currentUser = userServiceClient.getUserById(chatId);
+        if (currentUser == null) {
+            log.info("Пользователь {}, добавляем его в бд", chatId);
+            userServiceClient.createNewUser(chatId);
+            currentUser = userServiceClient.getUserById(chatId);
+        }
         if (update.hasMessage()) {
             if (update.getMessage().hasText() && update.getMessage().getText().startsWith("/")) {
+                log.info("Пользователь {} отправил команду: {}", chatId, update.getMessage().getText());
                 sendMessage(commandsHandler.handleCommand(currentUser, update));
             } else {
                 sendMessage(callbacksHandler.handleCallback(currentUser, update));

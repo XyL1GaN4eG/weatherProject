@@ -34,6 +34,7 @@ public class CommandHandler {
 
         var commandHandler = commands.get(command);
         if (commandHandler != null) {
+            log.info("Обрабатываем команду {}", update.getMessage().getText());
             return commandHandler.apply(currentUser, update);
         }
         return new SendMessage(chatId.toString(), Constants.UNKNOWN_COMMAND);
