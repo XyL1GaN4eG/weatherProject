@@ -3,7 +3,7 @@ package weatherproject.tgbotservice.utils;
 
 public class Constants {
     public static final String PLEASE_SET_CITY = "Введите, пожалуйста, название города или отправьте свою геолокацию\n";
-    private static final String WEATHER_IN_CITY_IS = "%s, погода в нем: %f, %s ";
+    private static final String WEATHER_IN_CITY_IS = "%s, погода в нем: %s, %s ";
     public static final String START_MESSAGE = "Приветствую! " +
             "Это WeatherBot - бот, с помощью которого можно получить информацию о погоде." + PLEASE_SET_CITY + "Чтобы увидеть все доступные через слеш команды, отправьте /help";
     public static final String HELP_MESSAGE =
