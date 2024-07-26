@@ -45,17 +45,18 @@ public class ApiClient {
         log.info("Отправляем HTTP запрос: {}", request);
         var response = getResponse(request);
 
-        if (response.statusCode() != 400) {
+        //TODO: переписать с использованием restTemplate чтобы использовать response.getStatusCode().is2xxSuccessful()
+        if (response.statusCode() >= 200 && response.statusCode() < 300) {
+            log.info("Получен успешный HTTP ответ с кодом: " + response.statusCode());
             return fetchData(response);
         }
+        log.info("Получен HTTP ответ с ошибкой: {}", response.statusCode());
         return null;
     }
 
     private HttpResponse<String> getResponse(HttpRequest request) {
         try {
-            var response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            log.info("Получен HTTP ответ с кодом: " + response.statusCode());
-            return response;
+            return client.send(request, HttpResponse.BodyHandlers.ofString());
         } catch (IOException e) {
             log.error("Произошла ошибка IOException при отправке HTTP запроса:", e);
             throw new RuntimeException(e);
