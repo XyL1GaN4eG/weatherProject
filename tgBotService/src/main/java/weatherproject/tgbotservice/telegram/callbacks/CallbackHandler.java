@@ -13,7 +13,8 @@ import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.telegram.UserState;
 
 import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
-import static weatherproject.tgbotservice.utils.Constants.*;
+import static weatherproject.tgbotservice.utils.Constants.ILLEGAL_CITY;
+import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
 
 @RequiredArgsConstructor
 @Component
@@ -37,24 +38,17 @@ public class CallbackHandler {
         //TODO: вынести коллбэки в отдельные классы
         //TODO: делать проверку в сообщении на то, город ли это вообще
         //TODO: удалить дубликаты
+        //TODO: пробовать перевести город из сообщения, а не из пользователя
+        //TODO: добавить перевод и на русский и на английский города в бд юзера и погоды (но потом)
 
 
         switch (currentState) {
             case START: {
                 if (message.hasText()) {
-                    try {
-                        if (isValidCityName(message.getText())) {
-                            city = translateClient.translateRuToEng(
-                                    message.getText())
-                                    .replace(" ", "-");
-                        } else {throw new NullPointerException();}
-                    } catch (NullPointerException e) {
-                        log.error("Ошибка при переводе города на английский: {}", e.getMessage());
-                        return new SendMessage(update.getMessage().getChatId().toString(), ILLEGAL_CITY
-                                .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
-                                .replace("{temperature}",
-                                        weatherServiceClient.getWeatherByCity(currentUser.getCity()).getTemperature().toString())
-                                .replace("{condition}", translateClient.translateEngToRussian(weatherServiceClient.getWeatherByCity(currentUser.getCity()).getCondition())));
+                    if (isValidCityName(message.getText())) {
+                        city = translateClient.translateRuToEng(
+                                        message.getText())
+                                .replace(" ", "-");
                     }
                 } else if (message.hasLocation()) {
                     city = translateClient.translateRuToEng(
