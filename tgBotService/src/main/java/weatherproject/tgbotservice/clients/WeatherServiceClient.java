@@ -3,6 +3,7 @@ package weatherproject.tgbotservice.clients;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import weatherproject.tgbotservice.dto.WeatherDTO;
 
@@ -35,7 +36,11 @@ public class WeatherServiceClient {
      */
     public WeatherDTO getWeatherByCity(String city) {
         String url = baseUrl + "/city/" + city;
-        return restTemplate.getForObject(url, WeatherDTO.class);
+        try {
+            return restTemplate.getForObject(url, WeatherDTO.class);
+        } catch (RestClientException e) {
+            return null;
+        }
     }
 
 }

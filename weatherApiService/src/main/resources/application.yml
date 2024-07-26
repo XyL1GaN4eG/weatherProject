@@ -30,7 +30,7 @@ rabbitmq:
   username: guest
   password: guest
 
-
+#TODO: use another api for weather forecast and to do some features
 weather:
   api:
     url:

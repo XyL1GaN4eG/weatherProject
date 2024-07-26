@@ -11,11 +11,9 @@ import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.telegram.UserState;
-import weatherproject.tgbotservice.utils.Constants;
 
 import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
-import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_FOUND;
-import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
+import static weatherproject.tgbotservice.utils.Constants.*;
 
 @RequiredArgsConstructor
 @Component
@@ -29,25 +27,40 @@ public class CallbackHandler {
 
     public SendMessage handleCallback(UserDTO currentUser, Update update) {
         var message = update.getMessage();
-        var chatId = message.getChatId();
+        var chatId = message.getChatId().toString();
         String city = "Извините, произошла ошибка";
         String textToReply = "Просим прощения, город или погода в нем не найдены.";
 
         var currentState = (UserState) UserState.valueOf(currentUser.getState());
-        log.info("Обрабатываем {} от пользователя ", message, currentUser);
+        log.info("Обрабатываем {} от пользователя {}", message, currentUser);
         //TODO: вынести обработку сообщения и присваивания названия города в отдельный метод
         //TODO: вынести коллбэки в отдельные классы
         //TODO: делать проверку в сообщении на то, город ли это вообще
         //TODO: удалить дубликаты
+
+
         switch (currentState) {
             case START: {
                 if (message.hasText()) {
-                    city = translateClient.translateRuToEng(message.getText()).replace(" ", "-");
+                    try {
+                        if (isValidCityName(message.getText())) {
+                            city = translateClient.translateRuToEng(
+                                    message.getText())
+                                    .replace(" ", "-");
+                        } else {throw new NullPointerException();}
+                    } catch (NullPointerException e) {
+                        log.error("Ошибка при переводе города на английский: {}", e.getMessage());
+                        return new SendMessage(update.getMessage().getChatId().toString(), ILLEGAL_CITY
+                                .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
+                                .replace("{temperature}",
+                                        weatherServiceClient.getWeatherByCity(currentUser.getCity()).getTemperature().toString())
+                                .replace("{condition}", translateClient.translateEngToRussian(weatherServiceClient.getWeatherByCity(currentUser.getCity()).getCondition())));
+                    }
                 } else if (message.hasLocation()) {
                     city = translateClient.translateRuToEng(
                             geocodingClient.getCityByCoordinates(
-                            message.getLocation().getLatitude(),
-                            message.getLocation().getLongitude()));
+                                    message.getLocation().getLatitude(),
+                                    message.getLocation().getLongitude()));
                 }
                 log.info("Пытаемся получить погоду в городе {}", city);
                 var weatherCity = weatherServiceClient.getWeatherByCity(city);
@@ -60,11 +73,22 @@ public class CallbackHandler {
                             .replace("{condition}", translateClient.translateEngToRussian(weatherCity.getCondition()));
                     log.info("Сообщение для отправки: {}", textToReply);
                 }
-                return new SendMessage(chatId.toString(), textToReply);
+                return new SendMessage(chatId, textToReply);
             }
 
             //Если город уже выставлен
             case HAVE_SETTED_CITY: {
+
+                if (message.hasText()) {
+                    if (!isValidCityName(message.getText())) {
+                        return new SendMessage(update.getMessage().getChatId().toString(), ILLEGAL_CITY
+                                .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
+                                .replace("{temperature}",
+                                        weatherServiceClient.getWeatherByCity(currentUser.getCity()).getTemperature().toString())
+                                .replace("{condition}", translateClient.translateEngToRussian(weatherServiceClient.getWeatherByCity(currentUser.getCity()).getCondition())));
+                    }
+                }
+
                 //то обращаемся к апи и возвращаем название города на английском языке
                 if (message.hasText()) {
                     city = translateClient.translateRuToEng(message.getText()).replace(" ", "-");
@@ -86,12 +110,24 @@ public class CallbackHandler {
                             .replace("{temperature}", weatherCity.getTemperature().toString())
                             .replace("{condition}", translateClient.translateEngToRussian(weatherCity.getCondition()));
                 } else {
-                    textToReply = CITY_NOT_FOUND.replace("city", translateClient.translateEngToRussian(city));
+                    return new SendMessage(chatId, ILLEGAL_CITY
+                            .replace("{city}", translateClient.translateEngToRussian(currentUser.getCity()))
+                            .replace("{temperature}",
+                                    weatherServiceClient.getWeatherByCity(currentUser.getCity()).getTemperature().toString())
+                            .replace("{condition}", translateClient.translateEngToRussian(weatherServiceClient.getWeatherByCity(currentUser.getCity()).getCondition())));
                 }
 
             }
         }
-        return new SendMessage(chatId.toString(), textToReply);
+        return new SendMessage(chatId, textToReply);
+    }
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private final String CITY_NAME_PATTERN = "^[A-Za-zА-Яа-яЁё]+([-\\s][A-Za-zА-Яа-яЁё]+)?$";
+
+    public boolean isValidCityName(String text) {
+        // Регулярное выражение для проверки названия города
+        return text.matches(CITY_NAME_PATTERN);
     }
 }
 

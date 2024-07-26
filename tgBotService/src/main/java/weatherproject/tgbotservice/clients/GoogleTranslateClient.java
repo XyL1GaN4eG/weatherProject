@@ -15,6 +15,7 @@ import java.net.URLEncoder;
 @NoArgsConstructor
 @Service
 public class GoogleTranslateClient {
+
     private boolean isRussian(String text) {
         return text.matches("[а-яА-ЯёЁ\\s]+");
     }
@@ -24,6 +25,10 @@ public class GoogleTranslateClient {
     }
 
     public String translateEngToRussian(String text) {
+        if (isRussian(text)) {
+            log.info("Слово {} уже на русском, перевод не требуется", text);
+            return text;
+        }
         return translateFromTo("en", "ru", text);
     }
 
@@ -61,5 +66,4 @@ public class GoogleTranslateClient {
             return "null";
         }
     }
-
 }

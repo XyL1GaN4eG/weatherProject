@@ -26,6 +26,8 @@ public class WeatherService {
         this.apiClient = apiClient;
     }
 
+    //TODO: разнести это по нескольким более читаемым методам или даже классам
+
     public WeatherDTO processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
         var cityWeather = weatherRepository.findLatestByCity(city);
@@ -36,12 +38,13 @@ public class WeatherService {
         boolean isEnoughTimeBetweenUpdates = false;
         //..или если город найден, но прошло слишком мало времени между запросами на город
         if (cityWeather != null) {
+            log.debug("Прошло больше часа между запросами погоды в городе {}, отправляю запрос к внешнему API", city);
             isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
         }
         if (isCityNull || isEnoughTimeBetweenUpdates) {
             try {
-                log.info("Город не найден {} или прошло больше часа с последнего обновления {}. Начинаем запрос к API",
-                        cityWeather == null,
+                log.info("Город не найден ({}) или прошло больше часа с последнего обновления ({}). Начинаем запрос к API",
+                        (cityWeather == null),
                         Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30);
             } catch (NullPointerException ignored) {
             }
@@ -75,6 +78,7 @@ public class WeatherService {
             return null;
 
         } else {
+            log.info("Отправляем уже существующие данные о погоде: {}", cityWeather);
             // если не прошло достаточно времени или город вообще не найден
             return new WeatherDTO(cityWeather);
         }

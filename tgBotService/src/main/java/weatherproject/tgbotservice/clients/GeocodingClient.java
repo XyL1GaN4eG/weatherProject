@@ -30,6 +30,7 @@ public class GeocodingClient {
                 .queryParam("lat", latitude)
                 .queryParam("lon", longitude)
                 .toUriString();
+        log.debug("Пробуем получить название города с координатами {}, {} по следующему API запросу {}", latitude, longitude, url);
 
         try {
             // Выполнение GET запроса и получение ответа в виде строки
@@ -41,7 +42,7 @@ public class GeocodingClient {
                 log.error("GET request failed with response code: {}", response.getStatusCode());
             }
         } catch (Exception e) {
-            log.error("Exception occurred while making request: {}", e.getMessage());
+            log.error("Exception occurred while making request: {}", e.getStackTrace());
         }
         return null;
     }
