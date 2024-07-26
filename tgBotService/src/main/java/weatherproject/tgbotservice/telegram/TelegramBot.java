@@ -27,9 +27,13 @@ import weatherproject.tgbotservice.utils.Constants;
 public class TelegramBot extends TelegramLongPollingBot {
 
     public final BotConfig botConfig;
+
     public final CommandHandler commandsHandler;
+
     public final CallbackHandler callbacksHandler;
+
     public final UserServiceClient userServiceClient;
+
     private final WeatherServiceClient weatherServiceClient;
 
     @Override

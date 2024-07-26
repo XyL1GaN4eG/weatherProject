@@ -30,11 +30,11 @@ public class WeatherEntity {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
-    public WeatherEntity(String city, Double temperature, String condition) {
+    public WeatherEntity(String city, Double temperature, String condition, LocalDateTime time) {
         this.city = city;
         this.temperature = temperature;
         this.condition = condition;
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = time;
     }
 
     public WeatherEntity(Object[] object) {

@@ -31,14 +31,14 @@ public class WeatherService {
     public WeatherDTO processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
         var cityWeather = weatherRepository.findLatestByCity(city);
-        log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
 
         // Если город не найден
         boolean isCityNull = cityWeather == null;
         boolean isEnoughTimeBetweenUpdates = false;
         //..или если город найден, но прошло слишком мало времени между запросами на город
         if (cityWeather != null) {
-            log.debug("Прошло больше часа между запросами погоды в городе {}, отправляю запрос к внешнему API", city);
+            log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
+//            log.debug("Прошло больше часа между запросами погоды в городе {}, отправляю запрос к внешнему API", city);
             isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
         }
         if (isCityNull || isEnoughTimeBetweenUpdates) {
