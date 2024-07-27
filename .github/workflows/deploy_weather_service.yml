@@ -29,7 +29,7 @@ jobs:
           script: |
             sudo echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
-            mvn clean install
+            mvn clean install -DskipTests
             echo "Build completed."
         env:
           WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}

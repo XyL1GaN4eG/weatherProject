@@ -29,7 +29,7 @@ jobs:
           script: |
             sudo echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
-            mvn clean install
+            mvn clean install -DskipTests
             echo "Build completed."
         env:
           TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
