@@ -10,6 +10,6 @@ import weatherproject.weatherapiservice.entity.WeatherEntity;
 public interface WeatherRepository extends JpaRepository<WeatherEntity, Long> {
     WeatherEntity findByCity(String city);
 
-    @Query(value = "SELECT * FROM city_weather WHERE city = :city ORDER BY updated_at ASC LIMIT 1", nativeQuery = true)
+    @Query(value = "SELECT * FROM city_weather WHERE city = :city ORDER BY updated_at DESC LIMIT 1", nativeQuery = true)
     WeatherEntity findLatestByCity(@Param("city") String city);
 }
