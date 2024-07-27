@@ -15,7 +15,7 @@ public class Constants {
                     "Если хотите сменить город, то " + PLEASE_SET_CITY.toLowerCase();
     public static final String FIRST_CITY_SET = "Поздравляю, вы выбрали " + WEATHER_IN_CITY_IS;
     public static final String NEW_CITY_SETTED = "Вы обновили свой город на " + WEATHER_IN_CITY_IS;
-    public static final String CITY_NOT_FOUND = "Город не найден, " + PLEASE_SET_CITY;
+    public static final String CITY_NOT_FOUND = "Город не найден, " + PLEASE_SET_CITY.toLowerCase();
     public static final String CITY_NOT_SET = "Извините, не могу предоставить погоду, так как вы еще не выбрали город. " + PLEASE_SET_CITY;
     public static final String UNKNOWN_COMMAND = "Извините, я не знаю такой команды";
     public static final String CHANGE_AVG_WEATHER = "Погода в городе {city} за последние 2 часа изменилась на целых {diff_temp}, текущая температура: {temp_now}";

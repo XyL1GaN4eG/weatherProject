@@ -8,6 +8,8 @@ import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.dto.WeatherDTO;
 
+import java.util.Objects;
+
 import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_FOUND;
 import static weatherproject.tgbotservice.utils.Constants.FIRST_CITY_SET;
 
@@ -20,7 +22,8 @@ public class StartCallback implements Callback {
     private final UserServiceClient userServiceClient;
     @Override
     public String execute(UserDTO user, WeatherDTO weatherDTO) {
-        if (weatherDTO != null) {
+        // Если weatherDTO не пустой
+        if (!Objects.equals(weatherDTO, new WeatherDTO())) {
             user.setCity(weatherDTO.getCity());
             userServiceClient.createOrUpdateUser(user);
             return String.format(FIRST_CITY_SET, (Object[]) weatherDtoToArray(weatherDTO));

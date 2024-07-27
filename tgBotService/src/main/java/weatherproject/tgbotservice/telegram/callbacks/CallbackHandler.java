@@ -67,7 +67,7 @@ public class CallbackHandler {
         }
     }
 
-    private WeatherDTO getWeather(Message message) {
+    protected WeatherDTO getWeather(Message message) {
         var city = "";
         if (message.hasText()) {
             city = getCityByText(message);
@@ -83,18 +83,18 @@ public class CallbackHandler {
         return null;
     }
 
-    private String getCityByText(Message message) {
+    protected String getCityByText(Message message) {
         return isValidCityName(message.getText()) ? translateClient.translateRuToEng(message.getText()).replace(" ", "-") : null;
     }
 
-    private String getCityByLocation(Message message) {
+    protected String getCityByLocation(Message message) {
         var cityName = geocodingClient.getCityByCoordinates(
                 message.getLocation().getLatitude(),
                 message.getLocation().getLongitude());
         return translateClient.translateRuToEng(cityName);
     }
 
-    private boolean isValidCityName(String text) {
+    protected boolean isValidCityName(String text) {
         // Регулярное выражение для проверки названия города
         return text.matches(CITY_NAME_PATTERN);
     }

@@ -17,9 +17,9 @@ import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
 @Component
 @Slf4j
 public class SetCityTextCallback implements Callback {
-    public final WeatherServiceClient weatherServiceClient;
-    public final GoogleTranslateClient translateClient;
-    public final UserServiceClient userServiceClient;
+    private final WeatherServiceClient weatherServiceClient;
+    private final GoogleTranslateClient translateClient;
+    private final UserServiceClient userServiceClient;
 
 
     @Override
