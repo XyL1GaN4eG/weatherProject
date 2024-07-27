@@ -1,4 +1,3 @@
-#TODO: remove hardcoding
 spring:
   application:
     name: tgBotService
@@ -9,12 +8,17 @@ server:
   port: 8082
 
 rabbitmq:
-  host: localhost
-  port: 5672
-  username: guest
-  password: guest
+  host:     ${RABBITMQ_HOST}
+  port:     ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USERNAME}
+  password: ${RABBITMQ_PASSWORD}
 
 bot:
   name: "XyL1GaN4eG_weatherBot"
-#  TODO: remove hardcoding
-  token: "7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8"
+  token: ${TG_BOT_API_KEY}
+
+user-service:
+  base-url: ${USER_SERVICE_BASE_URL}
+
+weather-service:
+  base-url: ${WEATHER_SERVICE_BASE_URL}
