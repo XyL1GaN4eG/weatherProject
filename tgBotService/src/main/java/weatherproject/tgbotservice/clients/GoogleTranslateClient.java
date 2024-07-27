@@ -43,7 +43,7 @@ public class GoogleTranslateClient {
 
     private String translateFromTo(String langFrom, String langTo, String text) {
         try {
-            String urlStr = "https://script.google.com/macros/s/AKfycbzO8nojwkOWKi3DjljSEf8byUYIwzNHIIhSRcPn4lGkE_1-m_LuqwU1s5SLJ0TRiarj/exec" +
+            String urlStr = "https://script.google.com/macros/s/{GOOGLE_SCRIPT_TRANSLATE_KEY}/exec" +
                     "?q=" + URLEncoder.encode(text, "UTF-8") +
                     "&target=" + langTo +
                     "&source=" + langFrom;
