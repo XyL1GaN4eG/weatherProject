@@ -28,6 +28,8 @@ public class WeatherDTO implements Serializable {
             log.error("Не удалось привести полученную погоду из weather service к корректному WeatherDTO");
         }
     }
+
+
     @Override
     public String toString() {
        return "[city=" + city + " , temperature=" + temperature + ", condition=" + condition + "]";

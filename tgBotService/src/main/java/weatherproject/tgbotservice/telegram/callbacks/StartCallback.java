@@ -19,10 +19,12 @@ import static weatherproject.tgbotservice.utils.Constants.FIRST_CITY_SET;
 public class StartCallback implements Callback {
 
     private final GoogleTranslateClient translateClient;
-
+    private final UserServiceClient userServiceClient;
     @Override
     public String execute(UserDTO user, WeatherDTO weatherDTO) {
         if (weatherDTO != null) {
+            user.setCity(weatherDTO.getCity());
+            userServiceClient.createOrUpdateUser(user);
             return String.format(FIRST_CITY_SET, (Object[]) weatherDtoToArray(weatherDTO));
         }
         return (CITY_NOT_FOUND);

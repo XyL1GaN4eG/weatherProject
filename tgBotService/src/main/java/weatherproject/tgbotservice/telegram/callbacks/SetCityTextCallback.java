@@ -19,7 +19,7 @@ import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
 public class SetCityTextCallback implements Callback {
     public final WeatherServiceClient weatherServiceClient;
     public final GoogleTranslateClient translateClient;
-
+    public final UserServiceClient userServiceClient;
 
 
     @Override
@@ -27,6 +27,8 @@ public class SetCityTextCallback implements Callback {
 //        log.info("Начинаем обрабатывать коллбек setCity от пользователя {} со следующей новой полученной погодой: {}", user.toString(), weatherDTO.toString());
 
         if (weatherDTO != null) {
+            user.setCity(weatherDTO.getCity());
+            userServiceClient.createOrUpdateUser(user);
             return String.format(NEW_CITY_SETTED,
                     (Object[]) weatherDtoToArray(weatherDTO));
         }
