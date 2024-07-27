@@ -14,7 +14,6 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class WeatherDTO implements Serializable {
     @Serial
     private static final long serialVersionUID = 2L;
