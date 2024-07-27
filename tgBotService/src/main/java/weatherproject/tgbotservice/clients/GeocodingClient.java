@@ -67,6 +67,12 @@ public class GeocodingClient {
             if (city == null) {
                 city = (String) address.get("village");
             }
+            if (city == null) {
+                city = (String) address.get("village");
+            }
+            if (city == null) {
+                city = (String) address.get("name");
+            }
 
         } catch (ParseException e) {
             log.error("Ошибка парсинга JSON от openstreetmap: {}", e.getMessage());
