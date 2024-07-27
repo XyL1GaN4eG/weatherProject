@@ -41,10 +41,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getName();
     }
 
-//    @Override
-//    public String getBotToken() {
-//        return botConfig.getToken();
-//    }
+    @Override
+    public String getBotToken() {
+        return botConfig.getToken();
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
