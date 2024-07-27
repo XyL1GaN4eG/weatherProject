@@ -2,9 +2,9 @@ spring:
   application:
     name: userService
   datasource:
-    url:      jdbc:postgresql://localhost:5432/weatherproject
-    username: username
-    password: password
+    url:      ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     hikari:
       allow-pool-suspension: true  # Enable Hikari pool suspension for JVM checkpoint restore
   jpa:
@@ -24,7 +24,7 @@ server:
   port: 8080
 
 rabbitmq:
-  host: localhost
-  port: 5672
-  username: guest
-  password: guest
+  host:     ${RABBITMQ_HOST}
+  port:     ${RABBITMQ_PORT}
+  username: ${RABBITMQ_USERNAME}
+  password: ${RABBITMQ_PASSWORD}
