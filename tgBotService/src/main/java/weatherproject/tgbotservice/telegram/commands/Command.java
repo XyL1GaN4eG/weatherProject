@@ -6,6 +6,5 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 import weatherproject.tgbotservice.dto.UserDTO;
 
 public interface Command {
-    //TODO: переписать чтобы принимал не юзердто, а чатайди
     SendMessage apply(UserDTO userDTO, Update update);
 }
