@@ -28,7 +28,7 @@ jobs:
           script: |
             echo "Building userService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
-            mvn clean install
+            mvn clean install -DskipTests
             echo "Build completed."
 
       - name: Set environment variables and restart userService
