@@ -54,13 +54,14 @@ public class GoogleTranslateClient {
 
     private String translateFromTo(String langFrom, String langTo, String text) {
         try {
+            log.info("Переводим слово {} с {} на {}", text, langFrom, langTo);
             String urlStr = "https://script.google.com/macros/s/{apiKey}/exec"
                     .replace("{apiKey}", apiKey) +
                     "?q=" + URLEncoder.encode(text, "UTF-8") +
                     "&target=" + langTo +
                     "&source=" + langFrom;
+            log.info("Сформировали следующий апи запрос: {}", urlStr);
             URL url = new URL(urlStr);
-            log.info("Переводим слово {} с {} на {}", text, langFrom, langTo);
             StringBuilder response = new StringBuilder();
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestProperty("User-Agent", "Mozilla/5.0");
