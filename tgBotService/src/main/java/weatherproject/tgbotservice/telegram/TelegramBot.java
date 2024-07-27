@@ -101,9 +101,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
     private void sendMessage(SendMessage sendMessage) {
+        log.info("Пытаемся отправить сообщение чату {} со следующим содержанием: {}", sendMessage.getChatId(), sendMessage.getText());
         try {
             sendMessage.setReplyMarkup(LocationRequestButton.requestLocation());
             execute(sendMessage);
+            log.info("Сообщение \"{}\" успешно отправлено!", sendMessage.getText());
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
         }
