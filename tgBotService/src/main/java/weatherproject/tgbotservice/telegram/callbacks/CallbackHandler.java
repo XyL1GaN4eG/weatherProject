@@ -9,7 +9,6 @@ import org.telegram.telegrambots.meta.api.objects.Message;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import weatherproject.tgbotservice.clients.GeocodingClient;
 import weatherproject.tgbotservice.clients.GoogleTranslateClient;
-import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.dto.WeatherDTO;
@@ -48,8 +47,6 @@ public class CallbackHandler {
         );
     }
 
-
-
     public SendMessage handleCallback(UserDTO user, Update update) {
         var message = update.getMessage();
         var chatId = update.getMessage().getChatId().toString();
@@ -57,9 +54,6 @@ public class CallbackHandler {
             var currentState = (UserState) UserState.valueOf(user.getState());
             var weather = getWeather(message);
             var commandHandler = callbacks.get(currentState);
-            log.info(chatId);
-            log.info(weather.toString());
-            log.info(user.toString());
             var text = commandHandler.execute(user, weather);
             return new SendMessage(chatId, text);
         } catch (NullPointerException e) {

@@ -45,7 +45,6 @@ public class ApiClient {
         log.info("Отправляем HTTP запрос: {}", request);
         var response = getResponse(request);
 
-        //TODO: переписать с использованием restTemplate чтобы использовать response.getStatusCode().is2xxSuccessful()
         if (response.statusCode() >= 200 && response.statusCode() < 300) {
             log.info("Получен успешный HTTP ответ с кодом: " + response.statusCode());
             return fetchData(response);

@@ -22,6 +22,7 @@ public class StartCallback implements Callback {
     private final UserServiceClient userServiceClient;
     @Override
     public String execute(UserDTO user, WeatherDTO weatherDTO) {
+
         // Если weatherDTO не пустой
         if (!Objects.equals(weatherDTO, new WeatherDTO())) {
             user.setCity(weatherDTO.getCity());

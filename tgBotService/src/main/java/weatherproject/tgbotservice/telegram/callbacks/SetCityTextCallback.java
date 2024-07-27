@@ -2,7 +2,6 @@ package weatherproject.tgbotservice.telegram.callbacks;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import weatherproject.tgbotservice.clients.GoogleTranslateClient;
 import weatherproject.tgbotservice.clients.UserServiceClient;
@@ -24,9 +23,10 @@ public class SetCityTextCallback implements Callback {
 
     @Override
     public String execute(UserDTO user, WeatherDTO weatherDTO) {
-//        log.info("Начинаем обрабатывать коллбек setCity от пользователя {} со следующей новой полученной погодой: {}", user.toString(), weatherDTO.toString());
+        log.info("Начинаем обрабатывать коллбек setCity от пользователя {} со следующей новой полученной погодой: {}", user.toString(), weatherDTO.toString());
 
-        if (weatherDTO != null) {
+        // если погода не пустая
+        if (!weatherDTO.equals(new WeatherDTO())) {
             user.setCity(weatherDTO.getCity());
             userServiceClient.createOrUpdateUser(user);
             return String.format(NEW_CITY_SETTED,
