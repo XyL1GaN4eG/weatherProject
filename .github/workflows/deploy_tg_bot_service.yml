@@ -30,8 +30,6 @@ jobs:
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
             mvn clean install -DskipTests
             echo "Build completed."
-        env:
-          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
 
       - name: Set environment variables and restart tgBotService
         uses: appleboy/ssh-action@master
@@ -40,8 +38,13 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
+            echo "Setting environment variables..."
+            echo "export TG_BOT_API_KEY=${{ secrets.TG_BOT_API_KEY }}" | sudo tee -a /etc/environment
+            source /etc/environment
+            echo "Environment variables set."
+
+            echo "Restarting tgBotService..."
             sudo systemctl stop tg-bot-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service
-        env:
-          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
+            echo "tgBotService restarted."
