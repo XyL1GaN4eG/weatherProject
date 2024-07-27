@@ -8,7 +8,7 @@ import java.util.Collections;
 
 public class LocationRequestButton {
     public static ReplyKeyboardMarkup requestLocation() {
-        KeyboardButton locationButton = new KeyboardButton("Новая геопозиция");
+        KeyboardButton locationButton = new KeyboardButton("Обновить геопозицию");
         locationButton.setRequestLocation(true); // Устанавливаем, что кнопка будет отправлять геолокацию
 
         // Создание строки клавиатуры с кнопкой
