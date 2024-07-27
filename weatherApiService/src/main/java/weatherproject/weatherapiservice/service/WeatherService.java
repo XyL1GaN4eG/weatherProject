@@ -26,63 +26,59 @@ public class WeatherService {
         this.apiClient = apiClient;
     }
 
-    //TODO: разнести это по нескольким более читаемым методам или даже классам
-
     public WeatherDTO processWeatherRequest(String city) {
         log.info("Начинаем собирать данные о погоде в городе: {}", city);
         var cityWeather = weatherRepository.findLatestByCity(city);
 
-        // Если город не найден
-        boolean isCityNull = cityWeather == null;
-        boolean isEnoughTimeBetweenUpdates = false;
-        //..или если город найден, но прошло слишком мало времени между запросами на город
-        if (cityWeather != null) {
-            log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
-//            log.debug("Прошло больше часа между запросами погоды в городе {}, отправляю запрос к внешнему API", city);
-            isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
-            log.info("Времени с последнего обновления прошло: {}", Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()));
-        }
-        if (isCityNull || isEnoughTimeBetweenUpdates) {
-            try {
-                log.info("Город не найден ({}) или прошло больше часа с последнего обновления ({}). Начинаем запрос к API",
-                        (cityWeather == null),
-                        Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toMinutes() > 30);
-            } catch (NullPointerException ignored) {
-            }
-
+        if (isNeedToUpdateDataOrNot(city, cityWeather)) {
             // обращаемся к апи погоды
             Object[] weatherData = apiClient.getWeather(city);
-            // если город найден и данные пришли
-            if (weatherData != null) {
-                log.info(
-                        "Данные о погоде после запроса к API " +
-                                "(в processWeatherRequest): {}, {}, {}",
-                        weatherData[0],
-                        weatherData[1],
-                        weatherData[2]);
-                try {
-                    log.info("Попытка распарсить данные");
-                    cityWeather = new WeatherEntity(weatherData);
-                    try {
-                        weatherRepository.save(cityWeather);
-                        log.info("Данные о погоде в городе {} сохранены в базу данных", city);
-                    } catch (Exception e) {
-                        log.error("Произошла ошибка при сохранении данных в таблицу: {}", e.getMessage());
-                    }
-                    return new WeatherDTO(cityWeather);
-                } catch (ClassCastException e) {
-                    log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
-                }
 
-            }
-            // если данные с апи погоды не пришли
-            return null;
+            // если город найден и данные пришли
+            return parseWeatherFromApi(weatherData);
 
         } else {
             log.info("Отправляем уже существующие данные о погоде: {}", cityWeather);
             // если не прошло достаточно времени или город вообще не найден
             return new WeatherDTO(cityWeather);
         }
+    }
+
+    private WeatherDTO parseWeatherFromApi(Object[] weatherData) {
+        WeatherEntity cityWeather;
+        log.info("Данные о погоде после запроса к API " +
+                        "(в processWeatherRequest): {}, {}, {}",
+                weatherData[0],
+                weatherData[1],
+                weatherData[2]);
+        try {
+            log.info("Попытка распарсить данные");
+            cityWeather = new WeatherEntity(weatherData);
+            try {
+                weatherRepository.save(cityWeather);
+                log.info("Данные о погоде в городе {} сохранены в базу данных", cityWeather.getCity());
+            } catch (Exception e) {
+                log.error("Произошла ошибка при сохранении данных в таблицу: {}", e.getMessage());
+            }
+            return new WeatherDTO(cityWeather);
+        } catch (ClassCastException e) {
+            log.error("Данные о погоде пришли в некорректном формате:{}", e.getMessage());
+        }
+        return null;
+    }
+
+    private static boolean isNeedToUpdateDataOrNot(String city, WeatherEntity cityWeather) {
+        // Если город не найден
+        boolean isCityNull = cityWeather == null;
+        boolean isEnoughTimeBetweenUpdates = false;
+        //..или если город найден, но прошло слишком мало времени между запросами на город
+        if (cityWeather != null) {
+            log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
+            isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
+            log.info("Времени с последнего обновления прошло: {}", Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()));
+        }
+
+        return isCityNull || isEnoughTimeBetweenUpdates;
     }
 
     public List<WeatherEntity> getAllCitiesWeather() {

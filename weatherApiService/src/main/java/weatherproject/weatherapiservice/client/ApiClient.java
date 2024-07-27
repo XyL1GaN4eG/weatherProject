@@ -68,23 +68,21 @@ public class ApiClient {
 
     private Object[] fetchData(HttpResponse<String> response) {
         JSONParser parser = new JSONParser();
-        double temperature;
-        String location;
-        String condition;
-
         try {
             var jsonResponse = (JSONObject) parser.parse(response.body());
-            JSONObject current = (JSONObject) jsonResponse.get("current");
-            temperature = (double) current.get("temp_c");
-            JSONObject locationObj = (JSONObject) jsonResponse.get("location");
-            location = (String) locationObj.get("name");
-            JSONObject conditionObj = (JSONObject) current.get("condition");
-            condition = (String) conditionObj.get("text");
+            var current = (JSONObject) jsonResponse.get("current");
+            var temperature = (double) current.get("temp_c");
+            var locationObj = (JSONObject) jsonResponse.get("location");
+            var location = (String) locationObj.get("name");
+            var conditionObj = (JSONObject) current.get("condition");
+            var condition = (String) conditionObj.get("text");
+
+
+            log.info("Данные успешно распарсились: Город = {}, Температура = {}°C, Состояние погоды = {}", location, temperature, condition);
+            return new Object[]{location, temperature, condition};
         } catch (ParseException e) {
             log.error("Произошла ошибка ParseException при парсинге JSON ответа:", e);
             throw new RuntimeException(e);
         }
-        log.info("Данные успешно распарсились: Город = {}, Температура = {}°C, Состояние погоды = {}", location, temperature, condition);
-        return new Object[]{location, temperature, condition};
     }
 }
