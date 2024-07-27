@@ -28,7 +28,7 @@ jobs:
           script: |
             echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
-            mvn clean install -DskipTests
+            mvn clean install
             echo "Build completed."
 
       - name: Restart tgBotService
