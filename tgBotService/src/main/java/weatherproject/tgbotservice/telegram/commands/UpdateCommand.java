@@ -30,11 +30,11 @@ public class UpdateCommand implements Command {
             log.info("Получаем погоду для пользователя {} для города {}", currentUser.getChatId(), currentUser.getCity());
             var weather = weatherServiceClient.getWeatherByCity(currentUser.getCity());
             log.info("Успешно получена погода для пользователя {}: {}", currentUser.getChatId(), weather);
-            return new SendMessage(update.getMessage().getChatId().toString(),
-                    ALREADY_SET_CITY
-                            .replace("{city}", translateClient.translateEngToRussian(weather.getCity()))
-                            .replace("{temperature}", weather.getTemperature().toString())
-                            .replace("{condition}", translateClient.translateEngToRussian(weather.getCondition())));
+            return new SendMessage(update.getMessage().getChatId().toString(), String.format(
+                    ALREADY_SET_CITY,
+                    translateClient.translateEngToRussian(weather.getCity()),
+                    weather.getTemperature().toString(),
+                    translateClient.translateEngToRussian(weather.getCondition())));
         }
     }
 }

@@ -35,7 +35,6 @@ public class SetCityTextCallback implements Callback {
         WeatherDTO newWeatherDTO = weatherServiceClient.getWeatherByCity(user.getCity());
         return String.format(ILLEGAL_CITY,
                 (Object[]) weatherDtoToArray(newWeatherDTO));
-
     }
 
     private String[] weatherDtoToArray(WeatherDTO weatherDTO) {
