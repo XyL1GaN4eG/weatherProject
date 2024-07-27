@@ -22,7 +22,6 @@ public class StartCommand implements Command {
     private final WeatherServiceClient weatherServiceClient;
     private final GoogleTranslateClient translateClient;
 
-    //TODO: добавить кнопку с запросом геолокации пользователя
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {
         log.info("Вызвана команда START для {}", currentUser);
