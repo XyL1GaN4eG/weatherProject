@@ -1,4 +1,4 @@
-package weatherproject.tgbotservice.callBacksTest;
+package weatherproject.tgbotservice.telegram.callBacksTest;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

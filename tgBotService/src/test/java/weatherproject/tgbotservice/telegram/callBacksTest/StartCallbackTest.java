@@ -1,4 +1,4 @@
-package weatherproject.tgbotservice.callBacksTest;
+package weatherproject.tgbotservice.telegram.callBacksTest;
 
 import org.apache.catalina.User;
 import org.junit.jupiter.api.BeforeEach;
