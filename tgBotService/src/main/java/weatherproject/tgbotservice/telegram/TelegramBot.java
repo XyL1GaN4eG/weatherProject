@@ -20,6 +20,8 @@ import weatherproject.tgbotservice.telegram.callbacks.CallbackHandler;
 import weatherproject.tgbotservice.telegram.commands.CommandHandler;
 import weatherproject.tgbotservice.utils.Constants;
 
+import javax.annotation.PostConstruct;
+
 //import static weatherproject.tgbotservice.utils.Constants.CANT_UNDERSTAND;
 
 @Component
@@ -45,6 +47,11 @@ public class TelegramBot extends TelegramLongPollingBot {
     @Override
     public String getBotToken() {
         return botConfig.getToken();
+    }
+
+    @PostConstruct
+    public void init() {
+        log.info("Телеграм бот успешно начал свою работу с именем {} и ключом {}", getBotUsername(), getBotToken());
     }
 
     @Override
