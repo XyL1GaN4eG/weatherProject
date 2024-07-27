@@ -27,7 +27,6 @@ import static weatherproject.tgbotservice.telegram.UserState.START;
 public class CallbackHandler {
     private final GeocodingClient geocodingClient;
     private final WeatherServiceClient weatherServiceClient;
-    private final UserServiceClient userServiceClient;
     private final GoogleTranslateClient translateClient;
     @SuppressWarnings("FieldCanBeLocal")
     private final String CITY_NAME_PATTERN = "^[A-Za-zА-Яа-яЁё]+([-\\s][A-Za-zА-Яа-яЁё]+)?$";
@@ -37,13 +36,11 @@ public class CallbackHandler {
     @Autowired
     public CallbackHandler(GeocodingClient geocodingClient,
                            WeatherServiceClient weatherServiceClient,
-                           UserServiceClient userServiceClient,
                            GoogleTranslateClient translateClient,
                            StartCallback startCallback,
                            SetCityTextCallback setCityTextCallback) {
         this.geocodingClient = geocodingClient;
         this.weatherServiceClient = weatherServiceClient;
-        this.userServiceClient = userServiceClient;
         this.translateClient = translateClient;
         this.callbacks = Map.of(
                 START, startCallback,
