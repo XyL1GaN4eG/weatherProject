@@ -30,7 +30,9 @@ jobs:
             sudo echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
             mvn clean install
-            echo "Build completed."   
+            echo "Build completed."
+        env:
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
 
 
       - name: SSH into server and restart weatherApiService

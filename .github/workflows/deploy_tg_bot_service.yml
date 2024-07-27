@@ -30,7 +30,9 @@ jobs:
             sudo echo "Building tgBotService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
             mvn clean install
-            echo "Build completed."   
+            echo "Build completed."
+        env:
+          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
 
 
       - name: SSH into server and restart tgBotService
@@ -43,3 +45,5 @@ jobs:
             sudo systemctl stop tg-bot-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service
+        env:
+          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения

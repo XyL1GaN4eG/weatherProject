@@ -1,4 +1,3 @@
-#TODO: remove hardcoding
 spring:
   application:
     name: tgBotService
@@ -16,5 +15,4 @@ rabbitmq:
 
 bot:
   name: "XyL1GaN4eG_weatherBot"
-#  TODO: remove hardcoding
-  token: "7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8"
+  token: ${TG_BOT_API_KEY}
