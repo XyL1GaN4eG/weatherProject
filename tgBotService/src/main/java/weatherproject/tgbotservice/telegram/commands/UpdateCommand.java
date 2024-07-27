@@ -3,7 +3,6 @@ package weatherproject.tgbotservice.telegram.commands;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.WebApplicationContext;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import weatherproject.tgbotservice.clients.GoogleTranslateClient;
@@ -20,7 +19,6 @@ import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_SET;
 public class UpdateCommand implements Command {
     private final WeatherServiceClient weatherServiceClient;
     private final GoogleTranslateClient translateClient;
-    private final WebApplicationContext webApplicationContext;
 
     @Override
     public SendMessage apply(UserDTO currentUser, Update update) {

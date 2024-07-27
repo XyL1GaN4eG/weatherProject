@@ -3,10 +3,8 @@ package weatherproject.tgbotservice.telegram.callbacks;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-import weatherproject.tgbotservice.clients.GeocodingClient;
 import weatherproject.tgbotservice.clients.GoogleTranslateClient;
 import weatherproject.tgbotservice.clients.UserServiceClient;
-import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.dto.WeatherDTO;
 

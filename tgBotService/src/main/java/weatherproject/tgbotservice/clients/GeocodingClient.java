@@ -30,7 +30,7 @@ public class GeocodingClient {
                 .queryParam("lat", latitude)
                 .queryParam("lon", longitude)
                 .toUriString();
-        log.debug("Пробуем получить название города с координатами {}, {} по следующему API запросу {}", latitude, longitude, url);
+        log.info("Пробуем получить название города с координатами {}, {} по следующему API запросу {}", latitude, longitude, url);
 
         try {
             // Выполнение GET запроса и получение ответа в виде строки
