@@ -40,6 +40,7 @@ public class WeatherService {
             log.info("Получены существующие данные о погоде в городе {}: {}", city, cityWeather);
 //            log.debug("Прошло больше часа между запросами погоды в городе {}, отправляю запрос к внешнему API", city);
             isEnoughTimeBetweenUpdates = Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()).toHours() > 1;
+            log.info("Времени с последнего обновления прошло: {}", Duration.between(cityWeather.getUpdatedAt(), LocalDateTime.now()));
         }
         if (isCityNull || isEnoughTimeBetweenUpdates) {
             try {
