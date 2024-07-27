@@ -1,7 +1,9 @@
 package weatherproject.tgbotservice.clients;
 
+import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -15,6 +17,15 @@ import java.net.URLEncoder;
 @NoArgsConstructor
 @Service
 public class GoogleTranslateClient {
+
+    @Value("${translate_script.api}")
+    private String apiKey;
+
+    @PostConstruct
+    public void checkApiKey() {
+        log.info("Google Translate API Key: {}", apiKey);
+    }
+
 
     private boolean isRussian(String text) {
         return text.matches("[а-яА-ЯёЁ\\s]+");
@@ -43,7 +54,8 @@ public class GoogleTranslateClient {
 
     private String translateFromTo(String langFrom, String langTo, String text) {
         try {
-            String urlStr = "https://script.google.com/macros/s/{GOOGLE_SCRIPT_TRANSLATE_KEY}/exec" +
+            String urlStr = "https://script.google.com/macros/s/{apiKey}/exec"
+                    .replace("{apiKey}", apiKey) +
                     "?q=" + URLEncoder.encode(text, "UTF-8") +
                     "&target=" + langTo +
                     "&source=" + langFrom;
