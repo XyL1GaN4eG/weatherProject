@@ -2,7 +2,6 @@ package weatherproject.tgbotservice.clients;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -22,9 +21,9 @@ public class UserServiceClient {
     private final String baseUrl;
 
     @Autowired
-    public UserServiceClient(RestTemplate restTemplate, @Value("${user-service.base-url}") String baseUrl) {
+    public UserServiceClient(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
-        this.baseUrl = baseUrl;
+        this.baseUrl = "http://localhost:8080/users";
     }
 
     public List<UserDTO> getAllUsers() {
