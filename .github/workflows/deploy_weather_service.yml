@@ -30,6 +30,8 @@ jobs:
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
             mvn clean install -DskipTests
             echo "Build completed."
+        env:
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
 
       - name: Set environment variables and restart weatherApiService
         uses: appleboy/ssh-action@master
@@ -38,20 +40,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
-            echo "Setting environment variables..."
-            echo "export DB_URL=${{ secrets.DB_URL }}" | sudo tee -a /etc/environment
-            echo "export DB_USERNAME=${{ secrets.DB_USERNAME }}" | sudo tee -a /etc/environment
-            echo "export DB_PASSWORD=${{ secrets.DB_PASSWORD }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" | sudo tee -a /etc/environment
-            echo "export WEATHER_API_KEY=${{ secrets.WEATHER_API_KEY }}" | sudo tee -a /etc/environment
-            source /etc/environment
-            echo "Environment variables set."
-
-            echo "Restarting weatherApiService..."
             sudo systemctl stop weather-api-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/*.jar /opt/weatherApiService/
             sudo systemctl start weather-api-service.service
-            echo "weatherApiService restarted."
+        env:
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}

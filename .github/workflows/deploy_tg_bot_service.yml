@@ -30,6 +30,8 @@ jobs:
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
             mvn clean install -DskipTests
             echo "Build completed."
+        env:
+          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
 
       - name: Set environment variables and restart tgBotService
         uses: appleboy/ssh-action@master
@@ -38,19 +40,8 @@ jobs:
           username: ${{ secrets.SERVER_USERNAME }}
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
-            echo "Setting environment variables..."
-            echo "export RABBITMQ_HOST=${{ secrets.RABBITMQ_HOST }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_PORT=${{ secrets.RABBITMQ_PORT }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_USERNAME=${{ secrets.RABBITMQ_USERNAME }}" | sudo tee -a /etc/environment
-            echo "export RABBITMQ_PASSWORD=${{ secrets.RABBITMQ_PASSWORD }}" | sudo tee -a /etc/environment
-            echo "export TG_BOT_API_KEY=${{ secrets.TG_BOT_API_KEY }}" | sudo tee -a /etc/environment
-            echo "export USER_SERVICE_BASE_URL=${{ secrets.USER_SERVICE_BASE_URL }}" | sudo tee -a /etc/environment
-            echo "export WEATHER_SERVICE_BASE_URL=${{ secrets.WEATHER_SERVICE_BASE_URL }}" | sudo tee -a /etc/environment
-            source /etc/environment
-            echo "Environment variables set."
-
-            echo "Restarting tgBotService..."
             sudo systemctl stop tg-bot-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service
-            echo "tgBotService restarted."
+        env:
+          TG_BOT_API_KEY: ${{ secrets.TG_BOT_API_KEY }}  # Передаем секрет как переменную окружения
