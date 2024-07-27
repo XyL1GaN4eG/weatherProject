@@ -68,6 +68,7 @@ public class GoogleTranslateClient {
             BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
             String inputLine;
             while ((inputLine = in.readLine()) != null) {
+                log.info("Парсим полученный ответ с google translate: ");
                 response.append(inputLine);
             }
             in.close();

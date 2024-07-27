@@ -41,6 +41,7 @@ public class UserServiceClient {
 
     public UserDTO getUserById(Long id) {
         String url = baseUrl + "/id/" + id;
+        log.info("Пытаемся получить пользователя по следующему запросу: {}", url);
         try {
             return restTemplate.getForObject(url, UserDTO.class);
         } catch (RestClientException e) {
