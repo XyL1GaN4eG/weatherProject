@@ -45,4 +45,5 @@ jobs:
             sudo systemctl stop weather-api-service.service
             sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/*.jar /opt/weatherApiService/
             sudo systemctl start weather-api-service.service
-
+        env:
+          WEATHER_API_KEY: ${{ secrets.WEATHER_API_KEY }}
