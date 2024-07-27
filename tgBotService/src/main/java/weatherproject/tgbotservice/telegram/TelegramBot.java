@@ -15,6 +15,7 @@ import weatherproject.tgbotservice.clients.UserServiceClient;
 import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.config.BotConfig;
 import weatherproject.tgbotservice.dto.UserDTO;
+import weatherproject.tgbotservice.telegram.button.LocationRequestButton;
 import weatherproject.tgbotservice.telegram.callbacks.CallbackHandler;
 import weatherproject.tgbotservice.telegram.commands.CommandHandler;
 import weatherproject.tgbotservice.utils.Constants;
@@ -94,6 +95,7 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     private void sendMessage(SendMessage sendMessage) {
         try {
+            sendMessage.setReplyMarkup(LocationRequestButton.requestLocation());
             execute(sendMessage);
         } catch (TelegramApiException e) {
             log.error(e.getMessage());
