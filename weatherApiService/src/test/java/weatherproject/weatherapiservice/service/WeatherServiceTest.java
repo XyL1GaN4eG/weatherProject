@@ -1,10 +1,9 @@
-package weatherproject.weatherapiservice;
+package weatherproject.weatherapiservice.service;
 
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -16,7 +15,6 @@ import weatherproject.weatherapiservice.client.ApiClient;
 import weatherproject.weatherapiservice.dto.WeatherDTO;
 import weatherproject.weatherapiservice.entity.WeatherEntity;
 import weatherproject.weatherapiservice.repository.WeatherRepository;
-import weatherproject.weatherapiservice.service.WeatherService;
 
 public class WeatherServiceTest {
 
@@ -117,4 +115,5 @@ public class WeatherServiceTest {
         // Проверяем вызовы на моке weatherRepository
         verify(weatherRepository, times(2)).save(any(WeatherEntity.class));
     }
+
 }
