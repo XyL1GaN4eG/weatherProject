@@ -41,10 +41,10 @@ public class TelegramBot extends TelegramLongPollingBot {
         return botConfig.getName();
     }
 
-    @Override
-    public String getBotToken() {
-        return botConfig.getToken();
-    }
+//    @Override
+//    public String getBotToken() {
+//        return botConfig.getToken();
+//    }
 
     @Override
     public void onUpdateReceived(Update update) {
@@ -65,6 +65,7 @@ public class TelegramBot extends TelegramLongPollingBot {
             }
         }
     }
+
     @RabbitListener(queues = "weather-notification-queue")
     public void handleChangeAvgTemp(String message) {
         JSONParser parser = new JSONParser();
@@ -80,18 +81,15 @@ public class TelegramBot extends TelegramLongPollingBot {
             var users = userServiceClient.getUsersByCity(city);
             for (UserDTO currentUser : users) {
                 sendMessage(new SendMessage(
-                        currentUser.getChatId().toString(), Constants.CHANGE_AVG_WEATHER
-                        .replace("{city}", city)
-                        .replace("diff_temp", diffTemp)
-                        .replace("temp_now", lastTemp)
-                ));
+                        currentUser.getChatId().toString(), String.format(Constants.CHANGE_AVG_WEATHER,
+                        city,
+                        lastTemp,
+                        diffTemp
+                )));
             }
         } catch (ParseException e) {
             log.error("Произошла ошибка при парсинге строки {}, ошибка: {}", message, e.getStackTrace());
         }
-
-
-
     }
 
     private void sendMessage(SendMessage sendMessage) {
@@ -103,61 +101,3 @@ public class TelegramBot extends TelegramLongPollingBot {
     }
 
 }
-
-    /*
-    //Метод для расписания уведомлений.
-    //Здесь можно настроить расписание для регулярной отправки сообщений.
-    private void scheduleNotifications() {
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Здесь логика отправки уведомлений
-                sendNotification();
-            }
-        }, 0, 24 * 60 * 60 * 1000); // Интервал в миллисекундах (например, каждый день)
-    }
-    */
-
-//TODO: дописать notification avg temp после того как сделаю основную логику
-/*
-    //TODO: добавить класс для хттп запросов, и через него обращаться к userservice
-    //TODO: переписать для поддержки триггера бд
-    @Listener(queues = NOTIFICATION_QUEUE)
-    private void sendNotification(String jsonWeather) {
-        var data = fetchData(jsonWeather);
-
-
-
-        String chatId = "123456789"; // Укажите правильный chatId
-        SendMessage sendMessage = new SendMessage(chatId, "Ежедневное уведомление");
-        sendMessage(sendMessage);
-    }
-
-    private Object[] fetchData(String response) {
-        JSONParser parser = new JSONParser();
-        String city = "";
-        String newAvgTemp = "";
-        String tempChange = "";
-
-        try {
-            // Парсим строку JSON
-            JSONObject jsonResponse = (JSONObject) parser.parse(response);
-
-            // Получаем значения из JSON-объекта
-            city = (String) jsonResponse.get("city");
-            newAvgTemp = ((String) jsonResponse.get("new_avg_temp"));
-            tempChange = ((String) jsonResponse.get("temp_change"));
-            log.info(
-                    "Данные успешно распарсились: Город = {}, " +
-                            "Текущая температура = {}°C, " +
-                            "Насколько изменилась температура= {}",
-                    city,
-                    newAvgTemp,
-                    tempChange);
-        } catch (ParseException e) {
-            log.error("Произошла ошибка ParseException при парсинге JSON ответа:", e);
-        }
-        return new String[]{city, newAvgTemp, tempChange};
-    }
- */
