@@ -1,6 +1,5 @@
 package weatherproject.weatherapiservice.listener;
 
-import lombok.extern.slf4j.Slf4j;
 import org.postgresql.PGNotification;
 import org.slf4j.Logger;
 import org.springframework.amqp.core.Queue;
@@ -15,14 +14,23 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
+//TODO: разобраться как работает и сделать чуть красивее
 
 @Component
-@Slf4j
 public class TemperatureChangeNotifier {
     private final RabbitTemplate rabbitTemplate;
+
+    private static final Logger log = org.slf4j.LoggerFactory.getLogger(TemperatureChangeNotifier.class);
+
+    // Автоматически подставляемый DataSource, который настроен в конфигурации Spring
     private final DataSource dataSource;
+
     private final Queue notificationQueue;
+
+    // Переменная для хранения соединения с базой данных
     private Connection connection;
+
+    // Поток, в котором будет выполняться прослушивание уведомлений
     private Thread listenerThread;
 
     @Autowired
@@ -35,14 +43,43 @@ public class TemperatureChangeNotifier {
     @PostConstruct
     public void init() {
         log.info("TemperatureChangeNotifier инициализирован");
-        startListening();
     }
 
-    private void startListening() {
+    // Метод, который будет выполнен после создания бина (инициализация)
+    @PostConstruct
+    public void start() {
+        // Создаем и запускаем новый поток для прослушивания уведомлений
         listenerThread = new Thread(() -> {
+            log.info("TemperatureChangeNotifier начал поток");
             try {
-                initializeConnection();
-                listenForNotifications();
+                log.info("Получаем соединение в бд");
+                connection = dataSource.getConnection();
+                log.info("Создаем SQL-запрос для подписки на уведомления");
+                connection.createStatement().execute("LISTEN my_notification");
+
+                log.info("Начинаем бесконечный цикл для постоянного прослушивания");
+                while (!Thread.currentThread().isInterrupted()) {
+                    try (Statement stmt = connection.createStatement()) {
+                        log.info("Повторно создаем SQL-запрос для подписки на уведомления");
+                        stmt.execute("LISTEN my_notification");
+
+                        // Проверяем наличие новых уведомлений с таймаутом в 5000 мс
+                        PGNotification[] notifications = connection.unwrap(org.postgresql.PGConnection.class).getNotifications(5000);
+
+                        for (PGNotification notification : notifications) {
+                            // Обработка уведомлений (тут можно добавить вашу логику)
+                            if (notification != null) {
+                                log.info("Получено уведомление от триггера с бд: {}", notification);
+                                rabbitTemplate.convertAndSend(notificationQueue.getName(), notification.getParameter());
+                            } else {
+                                log.info("Уведомления нет или массив уведомлений пуст");
+                            }
+                        }
+                    } catch (SQLException e) {
+                        // Выводим сообщение об ошибке в консоль
+                        log.error("Произошла ошибка во время прослушивания уведомлений: {}", e.getMessage());
+                    }
+                }
             } catch (SQLException e) {
                 log.error("Исключение при установке соединения: {}", e.getMessage());
             }
@@ -51,50 +88,15 @@ public class TemperatureChangeNotifier {
         listenerThread.start();
     }
 
-    private void initializeConnection() throws SQLException {
-        log.info("Получаем соединение в бд");
-        connection = dataSource.getConnection();
-        log.info("Создаем SQL-запрос для подписки на уведомления");
-        connection.createStatement().execute("LISTEN my_notification");
-    }
-
-    private void listenForNotifications() {
-        log.info("Начинаем бесконечный цикл для постоянного прослушивания");
-        while (!Thread.currentThread().isInterrupted()) {
-            try (Statement stmt = connection.createStatement()) {
-                stmt.execute("LISTEN my_notification");
-
-                PGNotification[] notifications = connection.unwrap(org.postgresql.PGConnection.class).getNotifications(5000);
-                processNotifications(notifications);
-            } catch (SQLException e) {
-                log.error("Произошла ошибка во время прослушивания уведомлений: {}", e.getMessage());
-            }
-        }
-    }
-
-    private void processNotifications(PGNotification[] notifications) {
-        if (notifications != null) {
-            for (PGNotification notification : notifications) {
-                if (notification != null) {
-                    log.info("Получено уведомление от триггера с бд: {}", notification);
-                    rabbitTemplate.convertAndSend(notificationQueue.getName(), notification.getParameter());
-                } else {
-                    log.info("Уведомления нет или массив уведомлений пуст");
-                }
-            }
-        }
-    }
-
+    // Метод, который будет выполнен перед уничтожением бина (очистка ресурсов)
     @PreDestroy
     public void stop() {
+        // Прерываем поток, если он активен
         if (listenerThread != null && listenerThread.isAlive()) {
             log.info("Прерываем поток для TemperatureChangeNotifier");
             listenerThread.interrupt();
         }
-        closeConnection();
-    }
-
-    private void closeConnection() {
+        // Закрываем соединение с базой данных, если оно открыто
         if (connection != null) {
             log.info("Закрываем соединение прослушивателя триггера с бд");
             try {
