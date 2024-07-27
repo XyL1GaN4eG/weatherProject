@@ -71,6 +71,6 @@ public class GeocodingClient {
         } catch (ParseException e) {
             log.error("Ошибка парсинга JSON от openstreetmap: {}", e.getMessage());
         }
-        return city;
+        return city.split(" ")[0];
     }
 }
