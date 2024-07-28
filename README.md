@@ -1,4 +1,5 @@
 # Weather Project
+[![wakatime](https://wakatime.com/badge/user/018ef218-3af8-4332-9010-91d30cbbb856/project/cd35eaf2-8fa2-436a-91a8-a6b1fc5f546e.svg)](https://wakatime.com/badge/user/018ef218-3af8-4332-9010-91d30cbbb856/project/cd35eaf2-8fa2-436a-91a8-a6b1fc5f546e)
 
 ## Описание
 
