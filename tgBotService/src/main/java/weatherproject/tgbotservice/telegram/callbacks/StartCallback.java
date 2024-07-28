@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import static weatherproject.tgbotservice.utils.Constants.CITY_NOT_FOUND;
 import static weatherproject.tgbotservice.utils.Constants.FIRST_CITY_SET;
+import static weatherproject.tgbotservice.utils.RegExUtil.removeNonLettersAndSpaces;
 
 @RequiredArgsConstructor
 @Component
@@ -33,7 +34,7 @@ public class StartCallback implements Callback {
     }
 
     private String[] weatherDtoToArray(WeatherDTO weatherDTO) {
-        var translatedWeather = translateClient.translateEngToRussian(weatherDTO.getCity() + ", " + weatherDTO.getCondition()).split(", ");
+        var translatedWeather = translateClient.translateEngToRussian(removeNonLettersAndSpaces(weatherDTO.getCity()) + ", " + weatherDTO.getCondition()).split(", ");
         return new String[]{
                 translatedWeather[0],
                 weatherDTO.getTemperature().toString(),

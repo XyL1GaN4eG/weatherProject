@@ -12,6 +12,7 @@ import weatherproject.tgbotservice.dto.WeatherDTO;
 import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
 import static weatherproject.tgbotservice.utils.Constants.ILLEGAL_CITY;
 import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
+import static weatherproject.tgbotservice.utils.RegExUtil.removeNonLettersAndSpaces;
 
 @RequiredArgsConstructor
 @Component
@@ -41,7 +42,7 @@ public class SetCityTextCallback implements Callback {
     }
 
     private String[] weatherDtoToArray(WeatherDTO weatherDTO) {
-        var translatedWeather = translateClient.translateEngToRussian(weatherDTO.getCity() + ", " + weatherDTO.getCondition()).split(", ");
+        var translatedWeather = translateClient.translateEngToRussian(removeNonLettersAndSpaces(weatherDTO.getCity()) + ", " + weatherDTO.getCondition()).split(", ");
         return new String[]{
                 translatedWeather[0],
                 weatherDTO.getTemperature().toString(),
