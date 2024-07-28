@@ -2,7 +2,9 @@
 
 ## Описание
 
-Этот проект представляет собой микросервисную архитектуру для работы с погодой и взаимодействия с Telegram ботом. Система позволяет пользователям получать информацию о погоде в их городах и получать уведомления о прогнозе погоды в их временной зоне. Проект состоит из нескольких микросервисов, включая сервис погоды, сервис пользователей и Telegram бот.
+Этот проект представляет собой микросервисную архитектуру для работы с погодой и взаимодействия с Telegram ботом.
+Система позволяет пользователям получать информацию о погоде в их городах и получать уведомления о прогнозе погоды в их
+временной зоне. Проект состоит из нескольких микросервисов, включая сервис погоды, сервис пользователей и Telegram бот.
 
 ## Технологии
 
@@ -19,9 +21,12 @@
 
 ## Структура проекта
 
-1. **Weather API Service**: Микросервис, предоставляющий информацию о погоде. Использует RestAPI для получения запросов от других микросервисов, для отправки уведомлений использует RabbitMQ и RestAPI.
-2. **User Service**: Микросервис для управления пользователями и хранения данных о пользователях, таких как их местоположение и состояние.
-3. **Telegram Bot Service**: Бот для Telegram, который позволяет пользователям запрашивать информацию о погоде и получать уведомления. Использует REST API и RabbitMQ для взаимодействия с другими микросервисами.
+1. **Weather API Service**: Микросервис, предоставляющий информацию о погоде. Использует RestAPI для получения запросов
+   от других микросервисов, для отправки уведомлений использует RabbitMQ и RestAPI.
+2. **User Service**: Микросервис для управления пользователями и хранения данных о пользователях, таких как их
+   местоположение и состояние.
+3. **Telegram Bot Service**: Бот для Telegram, который позволяет пользователям запрашивать информацию о погоде и
+   получать уведомления. Использует REST API и RabbitMQ для взаимодействия с другими микросервисами.
 
 ## Установка и запуск
 
@@ -49,7 +54,7 @@ CREATE TABLE city_weather
 );
 
 ALTER TABLE city_weather
-    OWNER TO xyl1gan4eg;
+    OWNER TO username;
 
 -- Таблица для хранения данных о пользователях
 CREATE TABLE tguser
@@ -60,7 +65,7 @@ CREATE TABLE tguser
 );
 
 ALTER TABLE tguser
-    OWNER TO xyl1gan4eg;
+    OWNER TO username;
 
 -- Функция для проверки изменения температуры
 CREATE FUNCTION fn_check_temp_change() RETURNS TRIGGER
@@ -70,18 +75,20 @@ $$
 DECLARE
     last_temp_1 FLOAT;
     last_temp_2 FLOAT;
-    avg_temp FLOAT;
-    diff_temp FLOAT;
-    output JSON;
+    avg_temp    FLOAT;
+    diff_temp   FLOAT;
+    output      JSON;
 BEGIN
     -- Получаем последние две температуры для данного города
-    SELECT temperature INTO last_temp_1
+    SELECT temperature
+    INTO last_temp_1
     FROM city_weather
     WHERE city = NEW.city
     ORDER BY updated_at DESC
     LIMIT 1 OFFSET 1;
 
-    SELECT temperature INTO last_temp_2
+    SELECT temperature
+    INTO last_temp_2
     FROM city_weather
     WHERE city = NEW.city
     ORDER BY updated_at DESC
@@ -97,10 +104,10 @@ BEGIN
         -- Если разница больше или равна 2 градусам, возвращаем JSON
         IF diff_temp >= 2 THEN
             output := JSON_BUILD_OBJECT(
-                'city', NEW.city,
-                'last_temp', NEW.temperature,
-                'diff_temp', diff_temp
-            );
+                    'city', NEW.city,
+                    'last_temp', NEW.temperature,
+                    'diff_temp', diff_temp
+                      );
             RAISE NOTICE '%', output;
         END IF;
     END IF;
@@ -109,7 +116,7 @@ BEGIN
 END;
 $$;
 
-ALTER FUNCTION fn_check_temp_change() OWNER TO xyl1gan4eg;
+ALTER FUNCTION fn_check_temp_change() OWNER TO username;
 ```
 
 ### 2. Конфигурация
@@ -148,14 +155,14 @@ spring:
   After=network.target
 
   [Service]
-  User=xyl1gan4eg
-  ExecStart=/usr/bin/java -jar /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar
+  User=yourUsername
+  ExecStart=/path/to/java -jar /home/yourUsername/weatherProject/weatherApiService/target/weatherApiService-0.0.1-SNAPSHOT.jar
 
   SuccessExitStatus=143
   Restart=always
   RestartSec=10
   Environment=SPRING_PROFILES_ACTIVE=prod
-  Environment=WEATHER_API_KEY=58b233192c024029bf3164200242607
+  Environment=WEATHER_API_KEY=<YOUR_API_KEY(e.g. from weatherapi.com/)>
 
   [Install]
   WantedBy=multi-user.target
@@ -174,7 +181,7 @@ spring:
 
   [Service]
   User=xyl1gan4eg
-  ExecStart=/usr/bin/java -jar /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar
+  ExecStart=/path/to/java -jar /home/yourUsername/weatherProject/userService/target/userService-0.0.1-SNAPSHOT.jar
 
   SuccessExitStatus=143
   Restart=always
@@ -197,13 +204,13 @@ spring:
 
   [Service]
   User=xyl1gan4eg
-  ExecStart=/usr/bin/java -jar /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/target/TgBotService-0.0.1-SNAPSHOT.jar
+  ExecStart=/path/to/java -jar /home/yourUsername/weatherProject/tgBotService/target/TgBotService-0.0.1-SNAPSHOT.jar
 
   SuccessExitStatus=143
   Restart=always
   RestartSec=10
   Environment=SPRING_PROFILES_ACTIVE=prod
-  Environment=TG_BOT_API_KEY=7322702173:AAHYHycNmHgeVULZEh5KWCtAHaBxqApUDS8
+  Environment=TG_BOT_API_KEY=<YOUR_API_KEY (from @BotFather)>
 
   [Install]
   WantedBy=multi-user.target
@@ -214,15 +221,19 @@ spring:
 Каждый микросервис можно запустить с помощью Maven:
 
 ```bash
-mvn spring-boot:run
+mvn clean install
 ```
 
 ### 5. Развертывание
 
-Для автоматического развертывания используйте GitHub Actions. Определите рабочие процессы в `.github/workflows/deploy.yml`:
+Для автоматического развертывания используйте GitHub Actions. Определите рабочие процессы
+в `.github/workflows/`:
+
+e.g. deploy.yml:
 
 ```yaml
-name: Deploy Service
+
+name: Deploy to Ubuntu Server
 
 on:
   push:
@@ -230,38 +241,189 @@ on:
       - main
 
 jobs:
-  deploy:
+  cleanup:
+    uses: ./.github/workflows/cleanup.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
+
+  deploy_user_service:
+    needs: cleanup
+    uses: ./.github/workflows/deploy_user_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
+
+  deploy_weather_service:
+    needs: cleanup
+    uses: ./.github/workflows/deploy_weather_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
+
+  deploy_tg_bot_service:
+    needs: cleanup
+    uses: ./.github/workflows/deploy_tg_bot_service.yml
+    secrets: inherit  # Наследовать секреты от основного workflow
+
+```
+e.g. cleanup.yml
+```yaml
+name: Cleanup server
+
+on:
+  workflow_call:
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: SSH into server and clean up source code
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            echo "Cleaning up source code..."
+            sudo rm -Rf /home/user/javaProjects/weatherProject/  # Удалить исходный код с сервера
+            echo "Cleanup completed."
+
+
+```
+e.g. deploy_tg_bot_service.yml
+```yaml
+name: Deploy Telegram weather bot Service
+
+on:
+  workflow_call:
+
+jobs:
+  deploy_tg_bot_service:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-      - name: Copy source code
+      - name: Copy tgBotService source code via ssh
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.SERVER_HOST }}
           username: ${{ secrets.SERVER_USERNAME }}
-          source: ./src/
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          target: /home/username/project/
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          source: tgBotService/
+          target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
 
-      - name: SSH into server and build project
-        run: |
-          ssh -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          cd /home/username/project/
-          mvn clean package
-          EOF
+      - name: SSH into server and build tgBotService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            echo "Building tgBotService on server..."
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService
+            mvn clean install
+            echo "Build completed."
 
-      - name: SSH into server and restart service
-        run: |
-          ssh -o StrictHostKeyChecking=no ${SERVER_USERNAME}@${SERVER_HOST} 'bash -s' << 'EOF'
-          sudo systemctl restart my-service
-          EOF
+      - name: Restart tgBotService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            sudo systemctl stop tg-bot-service.service
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
+            sudo systemctl start tg-bot-service.service
+
+```
+e.g. deploy_user_service.yml
+```yaml
+name: Deploy User Service
+
+on:
+  workflow_call:
+
+jobs:
+  deploy_user_service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy userService source code via ssh
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          source: userService/
+          target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
+
+      - name: SSH into server and build userService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            echo "Building userService on server..."
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/userService
+            mvn clean install
+            echo "Build completed."
+
+      - name: Restart userService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            sudo systemctl stop user-service.service
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
+            sudo systemctl start user-service.service
+
+```
+e.g. deploy_weather_api_service.yml
+```yaml
+name: Deploy Weather Api Service
+
+on:
+  workflow_call:
+
+jobs:
+  deploy_weather_api_service:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Copy weatherApiService source code via ssh
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          source: weatherApiService/
+          target: /home/xyl1gan4eg/myJavaProjects/weatherProject/
+
+      - name: SSH into server and build weatherApiService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            echo "Building weatherApiService on server..."
+            cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
+            mvn clean install
+            echo "Build completed."
+
+      - name: Restart weatherApiService
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.CLIENT_PRIVATE_KEY }}
+          script: |
+            sudo systemctl stop weather-api-service.service
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/*.jar /opt/weatherApiService/
+            sudo systemctl start weather-api-service.service
 ```
 
 ## Примеры использования
@@ -270,8 +432,8 @@ jobs:
 
 Отправьте запрос на `/weather/city` с параметром `city`, чтобы получить информацию о погоде в заданном городе:
 
-```bash
-curl -X GET "http://localhost:8080/weather/city?city=Paris"
+  ```bash
+  curl -X GET "http://localhost:8080/weather/city?city=Paris"
 ```
 
 ### Отправка геолокации через Telegram бот
@@ -288,11 +450,10 @@ mvn clean package -DskipTests
 
 ## Паттерны проектирования
 
-
-
 ## Паттерны проектирования
 
 В проекте применяются следующие паттерны проектирования:
+
 - **Команда**: Для обработки команд и коллбеков в Telegram боте.
 - **Observer**: Для уведомлений о прогнозе погоды.
 - **Strategy**: Для обработки разных типов запросов и команд.
