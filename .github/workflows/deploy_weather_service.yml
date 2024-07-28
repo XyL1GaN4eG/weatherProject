@@ -28,8 +28,14 @@ jobs:
           script: |
             echo "Building weatherApiService on server..."
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
+            mvn test
             mvn clean install
             echo "Build completed."
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Restart weatherApiService
         uses: appleboy/ssh-action@master
