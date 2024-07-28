@@ -58,7 +58,7 @@ public class CallbackHandler {
                 var text = commandHandler.execute(user, weather);
                 return new SendMessage(chatId, text);
             }
-            
+
             throw new NullPointerException();
         } catch (NullPointerException e) {
             return new SendMessage(chatId, Constants.ERROR);
