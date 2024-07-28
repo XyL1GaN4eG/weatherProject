@@ -58,5 +58,5 @@ jobs:
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo systemctl stop tg-bot-service.service
-            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/*.jar /opt/tgBotService/
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/tgBotService/target/*.jar /opt/tgBotService/
             sudo systemctl start tg-bot-service.service

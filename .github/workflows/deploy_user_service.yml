@@ -41,5 +41,5 @@ jobs:
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo systemctl stop user-service.service
-            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/*.jar /opt/userService/
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/userService/target/*.jar /opt/userService/
             sudo systemctl start user-service.service

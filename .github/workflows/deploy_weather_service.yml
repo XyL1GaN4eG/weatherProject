@@ -30,11 +30,11 @@ jobs:
             cd /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService
             mvn test
             echo "test completed."
-            
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
+
+#      - name: Upload coverage reports to Codecov
+#        uses: codecov/codecov-action@v4.0.1
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
 
       - name: SSH into server and build weatherApiService
         uses: appleboy/ssh-action@master
@@ -58,5 +58,5 @@ jobs:
           key: ${{ secrets.CLIENT_PRIVATE_KEY }}
           script: |
             sudo systemctl stop weather-api-service.service
-            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/*.jar /opt/weatherApiService/
+            sudo cp /home/xyl1gan4eg/myJavaProjects/weatherProject/weatherApiService/target/*.jar /opt/weatherApiService/
             sudo systemctl start weather-api-service.service
