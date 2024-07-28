@@ -9,6 +9,7 @@ import weatherproject.tgbotservice.clients.WeatherServiceClient;
 import weatherproject.tgbotservice.dto.UserDTO;
 import weatherproject.tgbotservice.dto.WeatherDTO;
 
+import static weatherproject.tgbotservice.telegram.UserState.HAVE_SETTED_CITY;
 import static weatherproject.tgbotservice.utils.Constants.ILLEGAL_CITY;
 import static weatherproject.tgbotservice.utils.Constants.NEW_CITY_SETTED;
 
@@ -28,6 +29,7 @@ public class SetCityTextCallback implements Callback {
         // если погода не пустая
         if (!weatherDTO.equals(new WeatherDTO())) {
             user.setCity(weatherDTO.getCity());
+            user.setState(HAVE_SETTED_CITY.toString());
             userServiceClient.createOrUpdateUser(user);
             return String.format(NEW_CITY_SETTED,
                     (Object[]) weatherDtoToArray(weatherDTO));
