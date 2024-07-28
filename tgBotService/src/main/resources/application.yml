@@ -15,7 +15,8 @@ rabbitmq:
 
 bot:
   name: "XyL1GaN4eG_weatherBot"
-  token: ${TG_BOT_API_KEY}
+  token:
+    ${TG_BOT_API_KEY}
 
 translate_script:
   api: ${GOOGLE_SCRIPT_TRANSLATE_KEY}

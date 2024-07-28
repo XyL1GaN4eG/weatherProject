@@ -30,7 +30,7 @@ public class ApiClient {
 
     @PostConstruct //выполняется сразу после инициализации класса
     public void init() {
-        log.info("Initialized ApiClient with URL: {}", url);
+        log.info("Инициализирован API клиент с ключом: {}", url);
     }
 
     public Object[] getWeather(String city) {
