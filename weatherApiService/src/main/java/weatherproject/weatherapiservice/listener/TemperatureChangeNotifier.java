@@ -14,7 +14,6 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-//TODO: разобраться как работает и сделать чуть красивее
 
 @Component
 public class TemperatureChangeNotifier {

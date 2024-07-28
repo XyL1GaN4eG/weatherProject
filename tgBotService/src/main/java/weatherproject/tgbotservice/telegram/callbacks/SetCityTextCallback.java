@@ -27,10 +27,11 @@ public class SetCityTextCallback implements Callback {
         log.info("Начинаем обрабатывать коллбек setCity от пользователя {} со следующей новой полученной погодой: {}", user.toString(), weatherDTO.toString());
 
         // если погода не пустая
-        if (!weatherDTO.equals(new WeatherDTO())) {
+        if (!weatherDTO.getCity().trim().isEmpty()) {
             user.setCity(weatherDTO.getCity());
             user.setState(HAVE_SETTED_CITY.toString());
             userServiceClient.createOrUpdateUser(user);
+            log.info("Присвоили пользователю {} новое состояние: {}", user.getChatId(), user.getState());
             return String.format(NEW_CITY_SETTED,
                     (Object[]) weatherDtoToArray(weatherDTO));
         }
