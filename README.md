@@ -1,6 +1,7 @@
 # Weather Project
 [![wakatime](https://wakatime.com/badge/user/018ef218-3af8-4332-9010-91d30cbbb856/project/cd35eaf2-8fa2-436a-91a8-a6b1fc5f546e.svg)](https://wakatime.com/badge/user/018ef218-3af8-4332-9010-91d30cbbb856/project/cd35eaf2-8fa2-436a-91a8-a6b1fc5f546e)
 [![Deploy to Ubuntu Server](https://github.com/XyL1GaN4eG/weatherProject/actions/workflows/deploy.yml/badge.svg)](https://github.com/XyL1GaN4eG/weatherProject/actions/workflows/deploy.yml)
+[![codecov](https://codecov.io/github/XyL1GaN4eG/weatherProject/graph/badge.svg?token=HMQ9JCE25O)](https://codecov.io/github/XyL1GaN4eG/weatherProject)
 ## Описание
 
 Этот проект представляет собой микросервисную архитектуру для работы с погодой и взаимодействия с Telegram ботом.
